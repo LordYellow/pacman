@@ -8,6 +8,9 @@ using namespace std;
 
 map<int, string> fieldTextures;
 
+/**
+ * @brief colors 
+ */
 void getColors(){
   fieldTextures[ROAD] = "\033[48;5;94m  ";
   fieldTextures[WALL] = "\033[48;5;2m  ";
@@ -22,7 +25,7 @@ void draw(array<array<uint8_t, WIDTH>, HIGH> field){
   }
 }
 
-int main(int argc, char const *argv[]) {
+int main() {
   //pacman tbd
   getColors();
   array<array<uint8_t, WIDTH>, HIGH> field = generateField();
