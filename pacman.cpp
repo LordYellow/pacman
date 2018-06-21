@@ -6,13 +6,17 @@
 
 using namespace std;
 
+map<int, string> fieldTextures;
+
+void getColors(){
+  fieldTextures[ROAD] = "\033[48;5;94m  ";
+  fieldTextures[WALL] = "\033[48;5;2m  ";
+}
+
 void draw(array<array<int, WIDTH>, HIGH> field){
-  map<int, string> fieldTextures;
-  fieldTextures[1] = "\033[48;5;16m  ";
-  fieldTextures[2] = "\033[48;5;32m  ";
   for(int i = 0; i < HIGH; i++){
     for(int a = 0; a < WIDTH; a++){
-      cout << fieldTextures[field[i][a]];
+      cout << fieldTextures[field[i][a]] << "\033[0m";
     }
     cout << endl;
   }
@@ -20,6 +24,7 @@ void draw(array<array<int, WIDTH>, HIGH> field){
 
 int main(int argc, char const *argv[]) {
   //pacman tbd
+  getColors();
   array<array<int, WIDTH>, HIGH> field = generateField();
   draw(field);
   return 0;
