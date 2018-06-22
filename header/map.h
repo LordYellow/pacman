@@ -12,7 +12,7 @@ bool possibleParts[17][3][3] = {{{0,1,0},{1,1,0},{0,0,0}},  {{0,1,0},{0,1,1},{0,
 bool roadIsLeft(array<array<uint8_t, WIDTH>, HIGH> field){
   for(uint8_t y = 0; y < HIGH; y++){
     for(uint8_t x = 0; x < WIDTH; x++){
-      if(field[y][x] == ROAD) return true;
+      if(field[y][x] == ROADWITHCOIN) return true;
     }
   }
   return false;
@@ -22,7 +22,7 @@ bool FieldIsViable(array<array<uint8_t, WIDTH>, HIGH> field){
 
   for(uint8_t y = 0; y < HIGH; y++){
     for(uint8_t x = 0; x < WIDTH; x++){
-      if(field[y][x] == ROAD){
+      if(field[y][x] == ROADWITHCOIN){
         uint8_t neighbourRoadCounter = 0;
         if(field[y+1][x] == 2) neighbourRoadCounter++;
         if(field[y-1][x] == 2) neighbourRoadCounter++;
@@ -35,8 +35,8 @@ bool FieldIsViable(array<array<uint8_t, WIDTH>, HIGH> field){
 
   for(;;){
     uint8_t a = rand() % HIGH, b = rand() % WIDTH;
-    if(field[a][b] == ROAD){
-      field[a][b] = ROAD+1;
+    if(field[a][b] == ROADWITHCOIN){
+      field[a][b] = ROADWITHCOIN+1;
       break;
     }
   }
@@ -46,11 +46,11 @@ bool FieldIsViable(array<array<uint8_t, WIDTH>, HIGH> field){
     oldfield = field;
     for(uint8_t y = 0; y < HIGH; y++){
       for(uint8_t x = 0; x < WIDTH; x++){
-        if(field[y][x] == ROAD+1){
-          if(field[y-1][x] == ROAD) field[y-1][x] = ROAD+1;
-          if(field[y+1][x] == ROAD) field[y+1][x] = ROAD+1;
-          if(field[y][x-1] == ROAD) field[y][x-1] = ROAD+1;
-          if(field[y][x+1] == ROAD) field[y][x+1] = ROAD+1;
+        if(field[y][x] == ROADWITHCOIN+1){
+          if(field[y-1][x] == ROADWITHCOIN) field[y-1][x] = ROADWITHCOIN+1;
+          if(field[y+1][x] == ROADWITHCOIN) field[y+1][x] = ROADWITHCOIN+1;
+          if(field[y][x-1] == ROADWITHCOIN) field[y][x-1] = ROADWITHCOIN+1;
+          if(field[y][x+1] == ROADWITHCOIN) field[y][x+1] = ROADWITHCOIN+1;
         }
       }
     }
@@ -144,7 +144,7 @@ array<array<uint8_t, WIDTH>, HIGH> generateField(){
     if(FieldIsViable(field)){
         for(;;){
             int y = rand() % HIGH, x = rand() % WIDTH;
-            if(field[y][x] == ROAD){
+            if(field[y][x] == ROADWITHCOIN){
                 field[y][x] = PACMAN;
                 
                 break;
