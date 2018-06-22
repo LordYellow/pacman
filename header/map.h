@@ -5,10 +5,9 @@
 #include <array>
 #include <iostream>
 
-//test
 using namespace std;
 
-bool possibleParts[12][3][3] = {{{0,1,0},{1,1,0},{0,0,0}},  {{0,1,0},{0,1,1},{0,0,0}},  {{0,0,0},{1,1,0},{0,1,0}},  {{0,0,0},{0,1,1},{0,1,0}},  {{0,1,0},{0,1,0},{0,1,0}},  {{0,0,0},{1,1,1},{0,0,0}},  {{0,1,0},{1,1,0},{0,1,0}},  {{0,1,0},{0,1,1},{0,1,0}},  {{0,1,0},{1,1,1},{0,0,0}},  {{0,0,0},{1,1,1},{0,1,0}},  {{0,1,0},{1,1,1},{0,1,0}}, {{0,0,0},{0,0,0},{0,0,0}}};
+bool possibleParts[17][3][3] = {{{0,1,0},{1,1,0},{0,0,0}},  {{0,1,0},{0,1,1},{0,0,0}},  {{0,0,0},{1,1,0},{0,1,0}},  {{0,0,0},{0,1,1},{0,1,0}},  {{0,1,0},{0,1,0},{0,1,0}},  {{0,0,0},{1,1,1},{0,0,0}},  {{0,1,0},{1,1,0},{0,1,0}},  {{0,1,0},{0,1,1},{0,1,0}},  {{0,1,0},{1,1,1},{0,0,0}},  {{0,0,0},{1,1,1},{0,1,0}},  {{0,1,0},{1,1,1},{0,1,0}}, {{0,0,0},{0,0,0},{0,0,0}}, {{0,1,0},{0,1,1},{0,1,1}},  {{0,1,0},{1,1,0},{1,1,0}},  {{0,1,1},{0,1,1},{0,0,0}},  {{1,1,0},{1,1,0},{0,0,0}}, {{1,1,1},{1,1,1},{1,1,1}}};
 
 bool roadIsLeft(array<array<uint8_t, WIDTH>, HIGH> field){
   for(uint8_t y = 0; y < HIGH; y++){
@@ -105,7 +104,7 @@ array<array<uint8_t, WIDTH>, HIGH> generateField(){
     //clear field
     for(uint8_t i = 0; i < HIGH/3+2; i++){
       for(uint8_t a = 0; a < WIDTH/3+2; a++){
-        fieldParts[i][a] = 12;
+        fieldParts[i][a] = 12; //for some reason this must be 12 
       }
     }
 
@@ -118,6 +117,8 @@ array<array<uint8_t, WIDTH>, HIGH> generateField(){
       fieldParts[0][i] = 11;
       fieldParts[HIGH/3+1][i] = 11;
     }
+    
+
 
     for(uint8_t y = 1; y < HIGH/3+1; y++){
       for(uint8_t x = 1; x < WIDTH/3+1; x++){
@@ -134,8 +135,23 @@ array<array<uint8_t, WIDTH>, HIGH> generateField(){
       }
     }
 
+    fieldParts[(HIGH/3+2)/2-1][(WIDTH/3+2)/2-1] = 16;
+    fieldParts[(HIGH/3+2)/2-1][(WIDTH/3+2)/2] = 16;
+    fieldParts[(HIGH/3+2)/2][(WIDTH/3+2)/2-1] = 16;
+    fieldParts[(HIGH/3+2)/2][(WIDTH/3+2)/2] = 16;
+        
     array<array<uint8_t, WIDTH>, HIGH> field = theFinalField(fieldParts);
-    if(FieldIsViable(field)) return field;
+    if(FieldIsViable(field)){
+        for(;;){
+            int y = rand() % HIGH, x = rand() % WIDTH;
+            if(field[y][x] == ROAD){
+                field[y][x] = PACMAN;
+                
+                break;
+            }
+        }
+        return field;
+    }
   }
 }
 

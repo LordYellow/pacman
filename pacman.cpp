@@ -1,19 +1,20 @@
 #include <iostream>
 #include "header/map.h"
 #include "header/definitions.h"
+#include "header/player.h"
 #include <array>
 #include <map>
 
 using namespace std;
-// this is new - echt!!!!!!!!!!!!!!!
+
 map<int, string> fieldTextures;
 
-/**
- * @brief colors 
- */
+
 void getColors(){
-  fieldTextures[ROAD] = "\033[48;5;94m  ";
-  fieldTextures[WALL] = "\033[48;5;2m  ";
+  fieldTextures[ROADWITHCOIN] = "\033[48;5;7m##";
+  fieldTextures[ROAD] = "\033[48;5;7m  ";
+  fieldTextures[WALL] = "\033[48;5;236m  ";
+  fieldTextures[PACMAN] =  "\033[48;5;7;38;5;3mᗤ ";
 }
 
 void draw(array<array<uint8_t, WIDTH>, HIGH> field){
@@ -29,6 +30,12 @@ int main() {
   //pacman tbd
   getColors();
   array<array<uint8_t, WIDTH>, HIGH> field = generateField();
-  draw(field);
+  player pacman(field);
+  array<array<uint8_t, WIDTH>, HIGH> *fieldpointer =  &field;
+  while(pacman.alive == true){
+        draw(field);
+  }
+  cout << "GAME OVER" << endl;
+  cout << endl << "Score: " << (int)pacman.coins << endl;
   return 0;
 }
