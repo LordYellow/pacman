@@ -9,6 +9,13 @@ using namespace std;
 
 bool possibleParts[17][3][3] = {{{0,1,0},{1,1,0},{0,0,0}},  {{0,1,0},{0,1,1},{0,0,0}},  {{0,0,0},{1,1,0},{0,1,0}},  {{0,0,0},{0,1,1},{0,1,0}},  {{0,1,0},{0,1,0},{0,1,0}},  {{0,0,0},{1,1,1},{0,0,0}},  {{0,1,0},{1,1,0},{0,1,0}},  {{0,1,0},{0,1,1},{0,1,0}},  {{0,1,0},{1,1,1},{0,0,0}},  {{0,0,0},{1,1,1},{0,1,0}},  {{0,1,0},{1,1,1},{0,1,0}}, {{0,0,0},{0,0,0},{0,0,0}}, {{0,1,0},{0,1,1},{0,1,1}},  {{0,1,0},{1,1,0},{1,1,0}},  {{0,1,1},{0,1,1},{0,0,0}},  {{1,1,0},{1,1,0},{0,0,0}}, {{1,1,1},{1,1,1},{1,1,1}}};
 
+/**
+ * @brief checks if there is a road tile in the field
+ * 
+ * @param field is the field you wann search for road tiles
+ * 
+ * @returns true if there is at least 1 road tile
+ */
 bool roadIsLeft(array<array<uint8_t, WIDTH>, HIGH> field){
   for(uint8_t y = 0; y < HIGH; y++){
     for(uint8_t x = 0; x < WIDTH; x++){
@@ -18,6 +25,13 @@ bool roadIsLeft(array<array<uint8_t, WIDTH>, HIGH> field){
   return false;
 }
 
+/**
+ * @brief checks if the field is a viable field
+ * 
+ * @param field is the field you wanna check
+ * 
+ * @returns true if the field is viable 
+ */
 bool FieldIsViable(array<array<uint8_t, WIDTH>, HIGH> field){
 
   for(uint8_t y = 0; y < HIGH; y++){
@@ -60,7 +74,17 @@ bool FieldIsViable(array<array<uint8_t, WIDTH>, HIGH> field){
   }
 }
 
-
+/**
+ * @brief checks if the part is a viable part for the field in the given position 
+ * 
+ * @param partNumber is the Id of the part
+ * @param fieldTop is the Id of the part over the Part you wanna check
+ * @param fieldLeft is the Id of the part Left to the Part you wanna check
+ * @param fieldRight is the Id of the part Right to the Part you wanna check
+ * @param fieldBottom is the Id of the part under the Part you wanna check
+ * 
+ * @returns true if the part is possible 
+ */
 bool partIsPossible(uint8_t partNumber, uint8_t fieldTop, uint8_t fieldLeft, uint8_t fieldBottom, uint8_t fieldRight){
   if(fieldTop != 12){
     if(!(possibleParts[fieldTop][2][1] == possibleParts[partNumber][0][1])) return false;
@@ -89,6 +113,15 @@ array<array<uint8_t, WIDTH>, HIGH> theFinalField(array<array<uint8_t, WIDTH/3+2>
   return field;
 }
 
+/**
+ * @brief checks if there is a Possible part
+ * 
+ * @param fieldParts is the field of the parts from the field you play on
+ * @param y is the y coordinate
+ * @param x is the x coordinate
+ * 
+ * @returns true if there is a possible part
+ */
 bool MatchingPartExists(array<array<uint8_t, WIDTH/3+2>, HIGH/3+2> fieldParts, uint8_t y, uint8_t x){
   for(uint8_t i = 0; i < 11; i++){
     if(partIsPossible(i, fieldParts[y-1][x], fieldParts[y][x-1], fieldParts[y+1][x], fieldParts[y][x+1])) return true;
@@ -96,6 +129,11 @@ bool MatchingPartExists(array<array<uint8_t, WIDTH/3+2>, HIGH/3+2> fieldParts, u
   return false;
 }
 
+/**
+ * @brief generates a field
+ * 
+ * @returns a field you can play on
+ */
 array<array<uint8_t, WIDTH>, HIGH> generateField(){
   for(;;){
     array<array<uint8_t, WIDTH/3+2>, HIGH/3+2> fieldParts;
