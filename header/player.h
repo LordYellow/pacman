@@ -16,6 +16,7 @@ public:
     
     bool symbol = false;
     string getsymbol(){
+        if(!this->alive) return "\033[48;5;7;38;5;9m☠ "; 
         if(this->symbol){this->symbol = false; return "\033[48;5;7;38;5;3m○ ";}
         this->symbol = true;
         switch(direction){

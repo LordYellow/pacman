@@ -25,7 +25,7 @@ void getColors(){
         fieldTextures[WALL] = "\033[48;5;236m  ";
         fieldTextures[PACMAN] =  "\033[48;5;7;38;5;3mᗤ ";
         fieldTextures[ENEMY] =  "\033[48;5;7;38;5;9m۩ ";
-        fieldTextures[PACMANSEARCH] = "\033[48;5;226m+ ";
+        fieldTextures[PACMANSEARCH] = "\033[48;5;8;38;5;3m+ ";
 }
 
 /**
@@ -93,7 +93,7 @@ int main() {
         array<array<uint8_t, WIDTH>, HIGH> *fieldpointer =  &field;
         vector<enemy> enemyvector;
         for(uint8_t i = 0; i < NUMBEROFENEMYS; i++){
-                enemyvector.push_back(enemy(fieldpointer));
+                enemyvector.push_back(enemy(fieldpointer, pacman.posY, pacman.posX));
         }
         draw(locatepacman(field), &pacman);
         for(;;){if(_kbhit()) break;}
@@ -108,6 +108,7 @@ int main() {
                 pacman.move(fieldpointer);
                 
         }
+        field[pacman.posY][pacman.posX] = PACMAN;
         draw(field, &pacman);
         cout << "GAME OVER" << endl;
         return 0;

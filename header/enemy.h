@@ -2,13 +2,14 @@
 #define ENEMY_H
 
 #include <array>
+#include <math.h>
 #include "definitions.h"
 
 using namespace std;
 
 class enemy {
 public:
-    enemy(array<array<uint8_t, WIDTH>, HIGH> *field);
+    enemy(array<array<uint8_t, WIDTH>, HIGH> *field, uint8_t pacmanY, uint8_t pacmanX);
     uint8_t posX= 0, posY = 0, randomDirection = rand() % 4, lastfield = ROADWITHCOIN;
     bool move(array<array<uint8_t, WIDTH>, HIGH> *field){
         (*field)[this->posY][this->posX] = this->lastfield;
@@ -38,15 +39,17 @@ public:
     }
 };
 
-enemy::enemy(array<array<uint8_t, WIDTH>, HIGH> *field){
+enemy::enemy(array<array<uint8_t, WIDTH>, HIGH> *field, uint8_t pacmanY, uint8_t pacmanX){
     srand(time(NULL));
     for(;;){
         uint8_t y = rand() % HIGH, x = rand() % WIDTH;
         if((*field)[y][x] == ROADWITHCOIN){
-            (*field)[y][x] = ENEMY;
-            this->posX = x;
-            this->posY = y;
-            break;
+            if(sqrt(pow((y-pacmanY),2)+pow((x-pacmanX),2)) > 5){
+                (*field)[y][x] = ENEMY;
+                this->posX = x;
+                this->posY = y;
+                break;
+            }
         }
     }
 }
