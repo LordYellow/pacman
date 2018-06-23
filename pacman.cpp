@@ -76,7 +76,7 @@ int main() {
         for(uint8_t i = 0; i < NUMBEROFENEMYS; i++){
                 enemyvector.push_back(enemy(fieldpointer));
         }
-        while(pacman.alive == true){
+        while(pacman.alive){
                 draw(field, pacman);
                 this_thread::sleep_for(chrono::milliseconds(300));
                 for(uint8_t i = 0; i < enemyvector.size(); i++){
