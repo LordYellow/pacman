@@ -34,20 +34,20 @@ void getColors(){
  * @param field is the field you wanna draw
  * @param pacman is your playable caracter
  */
-void draw(array<array<uint8_t, WIDTH>, HIGH> field, player pacman){
+void draw(array<array<uint8_t, WIDTH>, HIGH> field, player *pacman){
         system("clear");
         for(int i = 0; i < HIGH; i++){
                 for(int a = 0; a < WIDTH; a++){
                         if(field[i][a] == PACMAN){
-                             cout << pacman.getsymbol() << "\033[0m";
+                             cout << pacman->getsymbol() << "\033[0m";
                         }else{cout << fieldTextures[field[i][a]] << "\033[0m";}
                 }
                 cout << endl;
         }
-        cout << "SCORE: " << (int)pacman.coins << endl;
+        cout << "SCORE: " << (int)pacman->coins << endl;
 }
 
-array<array<uint8_t, WIDTH>, HIGH> locatepatman(array<array<uint8_t, WIDTH>, HIGH> field){
+array<array<uint8_t, WIDTH>, HIGH> locatepacman(array<array<uint8_t, WIDTH>, HIGH> field){
         for(int y = 0; y < HIGH; y++){
                 for(int x = 0; x< WIDTH; x++){
                         if(field[y][x] == PACMAN){
@@ -95,10 +95,10 @@ int main() {
         for(uint8_t i = 0; i < NUMBEROFENEMYS; i++){
                 enemyvector.push_back(enemy(fieldpointer));
         }
-        draw(locatepatman(field), pacman);
+        draw(locatepacman(field), &pacman);
         for(;;){if(_kbhit()) break;}
         while(pacman.alive){
-                draw(field, pacman);
+                draw(field, &pacman);
                 cout << (int)pacman.symbol << endl;
                 this_thread::sleep_for(chrono::milliseconds(300));
                 for(uint8_t i = 0; i < enemyvector.size(); i++){
@@ -108,7 +108,7 @@ int main() {
                 pacman.move(fieldpointer);
                 
         }
-        draw(field, pacman);
+        draw(field, &pacman);
         cout << "GAME OVER" << endl;
         return 0;
 }
