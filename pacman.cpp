@@ -3,23 +3,35 @@
 #include "header/definitions.h"
 #include "header/player.h"
 #include "header/stuffididnotwrite.h"
+#include "header/enemy.h"
 #include <array>
 #include <map>
 #include <unistd.h>
 #include <chrono>
 #include <thread>
+#include <vector>
 
 using namespace std;
 
 map<int, string> fieldTextures;
 
+/**
+ * @brief fills fieldTextures with Textures
+ */
 void getColors(){
         fieldTextures[ROADWITHCOIN] = "\033[48;5;7;38;5;2m$ ";
         fieldTextures[ROAD] = "\033[48;5;7m  ";
         fieldTextures[WALL] = "\033[48;5;236m  ";
         fieldTextures[PACMAN] =  "\033[48;5;7;38;5;3mᗤ ";
+        fieldTextures[ENEMY] =  "\033[48;5;7;38;5;9m۩ ";
 }
 
+/**
+ * @brief draws the field
+ * 
+ * @param field is the field you wanna draw
+ * @param pacman is your playable caracter
+ */
 void draw(array<array<uint8_t, WIDTH>, HIGH> field, player pacman){
         system("clear");
         for(int i = 0; i < HIGH; i++){
@@ -30,8 +42,14 @@ void draw(array<array<uint8_t, WIDTH>, HIGH> field, player pacman){
                 }
                 cout << endl;
         }
+        cout << "SCORE: " << (int)pacman.coins << endl;
 }
 
+/**
+ * @brief gets the commands from the player
+ * 
+ * @param pacman is a pointer pointing to your playable caracter
+ */
 void eingabe(player *pacman){
         char c = '!';
         if(_kbhit()){
@@ -52,14 +70,21 @@ int main() {
         array<array<uint8_t, WIDTH>, HIGH> field = generateField();
         player pacman(field);
         array<array<uint8_t, WIDTH>, HIGH> *fieldpointer =  &field;
+        vector<enemy> enemyvector;
+        for(uint8_t i = 0; i < NUMBEROFENEMYS; i++){
+                enemyvector.push_back(enemy(fieldpointer));
+        }
         while(pacman.alive == true){
                 draw(field, pacman);
                 this_thread::sleep_for(chrono::milliseconds(300));
+                for(uint8_t i = 0; i < enemyvector.size(); i++){
+                        if(enemyvector[i].move(fieldpointer)) pacman.alive = false;
+                }
                 eingabe((&pacman));
                 pacman.move(fieldpointer);
                 
         }
+        draw(field, pacman);
         cout << "GAME OVER" << endl;
-        cout << endl << "Score: " << (int)pacman.coins << endl;
         return 0;
 }
