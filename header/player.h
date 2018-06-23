@@ -6,16 +6,18 @@
 #include <iostream>
 
 //tried to put this into the class, but for some reason it does not work :(
-bool symbol = false;
+//bool symbol = false;
 
 class player {
 public:
     player(array<array<uint8_t, WIDTH>, HIGH> field);
     uint8_t direction = 0, posX= 0, posY = 0, coins = 0;
-    //bool symbol = false;
+    
+    
+    bool symbol = false;
     string getsymbol(){
-        if(symbol){symbol = false; return "\033[48;5;7;38;5;3m○ ";}
-        symbol = true;
+        if(this->symbol){this->symbol = false; return "\033[48;5;7;38;5;3m○ ";}
+        this->symbol = true;
         switch(direction){
             case 0: return "\033[48;5;7;38;5;3mᗢ ";
             case 1: return "\033[48;5;7;38;5;3mᗧ ";
@@ -24,6 +26,8 @@ public:
             default: return "somthing went wrong";
         }
     }
+    
+    
     bool alive = true;
     void move(array<array<uint8_t, WIDTH>, HIGH> *field){
         (*field)[this->posY][this->posX] = ROAD;

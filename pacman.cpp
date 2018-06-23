@@ -46,6 +46,16 @@ void draw(array<array<uint8_t, WIDTH>, HIGH> field, player pacman){
         cout << "SCORE: " << (int)pacman.coins << endl;
 }
 
+array<array<uint8_t, WIDTH>, HIGH> locatepatman(array<array<uint8_t, WIDTH>, HIGH> field){
+        for(int y = 0; y < HIGH; y++){
+                for(int x = 0; x< WIDTH; x++){
+                        
+                }
+        }
+        
+        return field;
+}
+
 /**
  * @brief gets the commands from the player
  * 
@@ -76,8 +86,11 @@ int main() {
         for(uint8_t i = 0; i < NUMBEROFENEMYS; i++){
                 enemyvector.push_back(enemy(fieldpointer));
         }
+        //draw(locatepatman(field));
+        for(;;){if(_kbhit()) break;}
         while(pacman.alive){
                 draw(field, pacman);
+                cout << (int)pacman.symbol << endl;
                 this_thread::sleep_for(chrono::milliseconds(300));
                 for(uint8_t i = 0; i < enemyvector.size(); i++){
                         if(enemyvector[i].move(fieldpointer)) pacman.alive = false;

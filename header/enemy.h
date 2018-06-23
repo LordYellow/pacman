@@ -9,9 +9,9 @@ using namespace std;
 class enemy {
 public:
     enemy(array<array<uint8_t, WIDTH>, HIGH> *field);
-    uint8_t posX= 0, posY = 0, randomDirection = rand() % 4;
+    uint8_t posX= 0, posY = 0, randomDirection = rand() % 4, lastfield = ROADWITHCOIN;
     bool move(array<array<uint8_t, WIDTH>, HIGH> *field){
-        (*field)[this->posY][this->posX] = ROAD;
+        (*field)[this->posY][this->posX] = this->lastfield;
         for(uint8_t i = 0; i < 4; i++){
             switch(this->randomDirection){
                 case 0: this->posY--; break;
@@ -21,6 +21,7 @@ public:
             }
             if((*field)[this->posY][this->posX] != WALL){
                 if((*field)[this->posY][this->posX] == PACMAN){(*field)[this->posY][this->posX] = ENEMY; return true;}
+                this->lastfield = (*field)[this->posY][this->posX];
                 (*field)[this->posY][this->posX] = ENEMY;
                 return false;
             }else{
