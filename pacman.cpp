@@ -25,7 +25,7 @@ void getColors(){
         fieldTextures[WALL] = "\033[48;5;236m  ";
         fieldTextures[PACMAN] =  "\033[48;5;7;38;5;3mᗤ ";
         fieldTextures[ENEMY] =  "\033[48;5;7;38;5;9m۩ ";
-        fieldTextures[PACMANSEARCH] = "\033[48;5;30m  ";
+        fieldTextures[PACMANSEARCH] = "\033[48;5;226m+ ";
 }
 
 /**
