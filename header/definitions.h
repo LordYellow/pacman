@@ -9,5 +9,6 @@
 #define ROAD 3
 #define ENEMY 5
 #define NUMBEROFENEMYS 25
+#define PACMANSEARCH 6
 
 #endif
