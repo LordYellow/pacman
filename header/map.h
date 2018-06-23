@@ -2,6 +2,7 @@
 #define MAP_H
 
 #include "definitions.h"
+#include "random.h"
 #include <array>
 #include <iostream>
 
@@ -48,7 +49,7 @@ bool FieldIsViable(array<array<uint8_t, WIDTH>, HIGH> field){
   }
 
   for(;;){
-    uint8_t a = rand() % HIGH, b = rand() % WIDTH;
+    uint8_t a = myrandom() % HIGH, b = myrandom() % WIDTH;
     if(field[a][b] == ROADWITHCOIN){
       field[a][b] = ROADWITHCOIN+1;
       break;
@@ -163,7 +164,7 @@ array<array<uint8_t, WIDTH>, HIGH> generateField(){
         uint8_t partNumber;
         if(MatchingPartExists(fieldParts, y, x)){
           for(;;){
-            partNumber = rand() % 11;
+            partNumber = myrandom() % 11;
             if(partIsPossible(partNumber, fieldParts[y-1][x], fieldParts[y][x-1], fieldParts[y+1][x], fieldParts[y][x+1])) break;
           }
           fieldParts[y][x] = partNumber;
@@ -181,7 +182,7 @@ array<array<uint8_t, WIDTH>, HIGH> generateField(){
     array<array<uint8_t, WIDTH>, HIGH> field = theFinalField(fieldParts);
     if(FieldIsViable(field)){
         for(;;){
-            int y = rand() % HIGH, x = rand() % WIDTH;
+            int y = myrandom() % HIGH, x = myrandom() % WIDTH;
             if(field[y][x] == ROADWITHCOIN){
                 field[y][x] = PACMAN;
                 

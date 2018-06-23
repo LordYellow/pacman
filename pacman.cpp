@@ -3,6 +3,7 @@
 #include "header/definitions.h"
 #include "header/player.h"
 #include "header/stuffididnotwrite.h"
+#include "header/random.h"
 #include "header/enemy.h"
 #include <array>
 #include <map>
@@ -66,6 +67,7 @@ void eingabe(player *pacman){
 
 int main() {
         //pacman tbd
+        //enterseed();
         getColors();
         array<array<uint8_t, WIDTH>, HIGH> field = generateField();
         player pacman(field);
