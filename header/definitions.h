@@ -10,5 +10,7 @@
 #define ENEMY 5
 #define NUMBEROFENEMYS 25
 #define PACMANSEARCH 6
+#define POWERUP 7
+#define NUMBEROFPOWERUPS 20
 
 #endif

@@ -4,15 +4,14 @@
 #include <array>
 #include "definitions.h"
 #include <iostream>
-
-//tried to put this into the class, but for some reason it does not work :(
-//bool symbol = false;
+#include <chrono>
+#include <thread>
 
 class player {
 public:
     player(array<array<uint8_t, WIDTH>, HIGH> field);
     uint8_t direction = 0, posX= 0, posY = 0, coins = 0;
-    
+    bool getpowerup = false;
     
     bool symbol = false;
     string getsymbol(){
@@ -28,8 +27,18 @@ public:
         }
     }
     
+    void deathAnimation(){
+        system("clear");
+        for(int i = 0; i < HIGH; i++){
+                for(int a = 0; a < WIDTH; a++){
+                        cout << "\033[48;5;9m  " << "\033[0m";
+                }
+                cout << endl;
+        }
+        this_thread::sleep_for(chrono::milliseconds(300));
+    }
     
-    bool alive = true;
+    uint8_t alive = 1;
     void move(array<array<uint8_t, WIDTH>, HIGH> *field){
         (*field)[this->posY][this->posX] = ROAD;
         switch(this -> direction){
@@ -40,7 +49,8 @@ public:
         }
         if((*field)[this->posY][this->posX] != WALL){
             if((*field)[this->posY][this->posX] == ROADWITHCOIN) this->coins++;
-            if((*field)[this->posY][this->posX] == ENEMY){this->alive = false;}else{(*field)[this->posY][this->posX] = PACMAN;}
+            if((*field)[this->posY][this->posX] == POWERUP) this->getpowerup = true;
+            if((*field)[this->posY][this->posX] == ENEMY){this->alive--; this->deathAnimation();}else{(*field)[this->posY][this->posX] = PACMAN;}
         }else{
             switch(this -> direction){
                 case 2: this->posY--; break;

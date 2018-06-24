@@ -5,6 +5,7 @@
 #include "header/stuffididnotwrite.h"
 #include "header/random.h"
 #include "header/enemy.h"
+#include "header/powerup.h"
 #include <array>
 #include <map>
 #include <unistd.h>
@@ -26,6 +27,7 @@ void getColors(){
         fieldTextures[PACMAN] =  "\033[48;5;7;38;5;3mᗤ ";
         fieldTextures[ENEMY] =  "\033[48;5;7;38;5;9m۩ ";
         fieldTextures[PACMANSEARCH] = "\033[48;5;8;38;5;3m+ ";
+        fieldTextures[POWERUP] = "\033[48;5;7;38;5;5m⏻ ";
 }
 
 /**
@@ -44,7 +46,7 @@ void draw(array<array<uint8_t, WIDTH>, HIGH> field, player *pacman){
                 }
                 cout << endl;
         }
-        cout << "SCORE: " << (int)pacman->coins << endl;
+        cout << "SCORE: " << (int)pacman->coins << endl << "LIVES: " << (int)pacman->alive << endl;
 }
 
 array<array<uint8_t, WIDTH>, HIGH> locatepacman(array<array<uint8_t, WIDTH>, HIGH> field){
@@ -99,10 +101,16 @@ int main() {
         for(;;){if(_kbhit()) break;}
         while(pacman.alive){
                 draw(field, &pacman);
-                cout << (int)pacman.symbol << endl;
+                if(pacman.getpowerup){
+                        givePowerup(&pacman);
+                        pacman.getpowerup = false;
+                }
                 this_thread::sleep_for(chrono::milliseconds(300));
                 for(uint8_t i = 0; i < enemyvector.size(); i++){
-                        if(enemyvector[i].move(fieldpointer)) pacman.alive = false;
+                        if(enemyvector[i].move(fieldpointer)){
+                                pacman.deathAnimation();
+                                pacman.alive--;
+                        }
                 }
                 eingabe((&pacman));
                 pacman.move(fieldpointer);

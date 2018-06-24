@@ -185,8 +185,16 @@ array<array<uint8_t, WIDTH>, HIGH> generateField(){
             int y = myrandom() % HIGH, x = myrandom() % WIDTH;
             if(field[y][x] == ROADWITHCOIN){
                 field[y][x] = PACMAN;
-                
                 break;
+            }
+        }
+        for(int i = 0; i < NUMBEROFPOWERUPS; i++){
+            for(;;){
+                int y = myrandom() % HIGH, x = myrandom() % WIDTH;
+                if(field[y][x] == ROADWITHCOIN){
+                    field[y][x] = POWERUP;
+                    break;
+                }
             }
         }
         return field;
