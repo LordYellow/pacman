@@ -24,10 +24,19 @@ void giveLife(player *pacman){
     powerUpNotification("+1 Life!");
 }
 
+void giveMovementSpeed(player *pacman){
+    if(pacman->baseDelay > 1){
+        pacman->baseDelay--;
+        powerUpNotification("Movement Speed increased!");
+    }else{
+        powerUpNotification("Your are as fast at the light!");
+    }
+}
+
 void givePowerup(player *pacman){
     switch(rand() % 2){
         case 0: giveLife(pacman); break;
-        case 1: break;
+        case 1: giveMovementSpeed(pacman); break;
         
         default: powerUpNotification("Nothing :("); break; //this will never happen, but just in case...
     }

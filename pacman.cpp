@@ -105,16 +105,18 @@ int main() {
                         givePowerup(&pacman);
                         pacman.getpowerup = false;
                 }
-                this_thread::sleep_for(chrono::milliseconds(300));
+                this_thread::sleep_for(chrono::milliseconds(30));
                 for(uint8_t i = 0; i < enemyvector.size(); i++){
-                        if(enemyvector[i].move(fieldpointer)){
-                                pacman.deathAnimation();
-                                pacman.alive--;
+                        if(enemyvector[i].alive){
+                                if(enemyvector[i].move(fieldpointer)){
+                                        pacman.deathAnimation();
+                                        enemyvector[i].alive = false;
+                                        pacman.alive--;
+                                }
                         }
                 }
                 eingabe((&pacman));
                 pacman.move(fieldpointer);
-                
         }
         field[pacman.posY][pacman.posX] = PACMAN;
         draw(field, &pacman);
