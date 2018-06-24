@@ -16,8 +16,7 @@ public:
     bool symbol = false;
     string getsymbol(){
         if(!this->alive) return "\033[48;5;7;38;5;9m☠ "; 
-        if(this->symbol){this->symbol = false; return "\033[48;5;7;38;5;3m○ ";}
-        this->symbol = true;
+        if(this->symbol){return "\033[48;5;7;38;5;3m○ ";}
         switch(direction){
             case 0: return "\033[48;5;7;38;5;3mᗢ ";
             case 1: return "\033[48;5;7;38;5;3mᗧ ";
@@ -40,6 +39,7 @@ public:
     
     uint8_t alive = 1;
     void move(array<array<uint8_t, WIDTH>, HIGH> *field){
+        this->symbol = !this->symbol;
         (*field)[this->posY][this->posX] = ROAD;
         switch(this -> direction){
             case 0: this->posY--; break;
