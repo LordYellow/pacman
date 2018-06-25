@@ -92,10 +92,10 @@ int main() {
         getColors();
         array<array<uint8_t, WIDTH>, HIGH> field = generateField();
         player pacman(field);
-        array<array<uint8_t, WIDTH>, HIGH> *fieldpointer =  &field;
+        array<array<uint8_t, WIDTH>, HIGH> enemy::field = &field;
         vector<enemy> enemyvector;
         for(uint8_t i = 0; i < NUMBEROFENEMYS; i++){
-                enemyvector.push_back(enemy(fieldpointer, pacman.posY, pacman.posX));
+                enemyvector.push_back(enemy(pacman.posY, pacman.posX));
         }
         draw(locatepacman(field), &pacman);
         for(;;){if(_kbhit()) break;}
@@ -108,7 +108,7 @@ int main() {
                 this_thread::sleep_for(chrono::milliseconds(30));
                 for(uint8_t i = 0; i < enemyvector.size(); i++){
                         if(enemyvector[i].alive){
-                                if(enemyvector[i].move(fieldpointer)){
+                                if(enemyvector[i].move()){
                                         pacman.deathAnimation();
                                         enemyvector[i].alive = false;
                                         pacman.alive--;
@@ -116,7 +116,7 @@ int main() {
                         }
                 }
                 eingabe((&pacman));
-                pacman.move(fieldpointer);
+                pacman.move(&field);
         }
         field[pacman.posY][pacman.posX] = PACMAN;
         draw(field, &pacman);
