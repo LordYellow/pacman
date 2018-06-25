@@ -92,7 +92,7 @@ int main() {
         getColors();
         array<array<uint8_t, WIDTH>, HIGH> field = generateField();
         player pacman(field);
-        array<array<uint8_t, WIDTH>, HIGH> enemy::field = &field;
+        array<array<uint8_t, WIDTH>, HIGH>* enemy::field = &field;
         vector<enemy> enemyvector;
         for(uint8_t i = 0; i < NUMBEROFENEMYS; i++){
                 enemyvector.push_back(enemy(pacman.posY, pacman.posX));
