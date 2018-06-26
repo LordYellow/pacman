@@ -13,6 +13,10 @@ public:
     uint8_t posX= 0, posY = 0, randomDirection = rand() % 4, lastfield = ROADWITHCOIN, baseDelay = 10, delayCounter = 0;
     bool alive = true;
     static array<array<uint8_t, WIDTH>, HIGH> *field;
+    
+    /**
+     * @brief moves the enemy
+     */
     bool move();
 };
 

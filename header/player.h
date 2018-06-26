@@ -14,7 +14,16 @@ public:
     bool getpowerup = false, symbol = false;
     string getsymbol();
     
+    /**
+     * @brief makes the screen red if you die
+     */
     void deathAnimation();
+    
+    /**
+     * @brief moves the player
+     * 
+     * @param field is a pointer to the field you play on. this will be removed later
+     */
     void move(array<array<uint8_t, WIDTH>, HIGH> *field);
 };
 
