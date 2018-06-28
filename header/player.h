@@ -9,9 +9,10 @@
 
 class player {
 public:
-    player(array<array<uint8_t, WIDTH>, HIGH> field);
+    player(array<array<uint8_t, WIDTH>, HIGH> *field);
     uint8_t direction = 0, posX= 0, posY = 0, coins = 0, baseDelay = 10, delayCounter = 0, alive =1;
     bool getpowerup = false, symbol = false;
+    array<array<uint8_t, WIDTH>, HIGH> *field;
     string getsymbol();
     
     /**
@@ -24,13 +25,14 @@ public:
      * 
      * @param field is a pointer to the field you play on. this will be removed later
      */
-    void move(array<array<uint8_t, WIDTH>, HIGH> *field);
+    void move();
 };
 
-player::player(array<array<uint8_t, WIDTH>, HIGH> field){
-  for(uint8_t y = 0; y < HIGH; y++){
+player::player(array<array<uint8_t, WIDTH>, HIGH> *thefield){
+    this->field = thefield;
+    for(uint8_t y = 0; y < HIGH; y++){
       for(uint8_t x = 0; x < WIDTH; x++){
-          if(field[y][x] == PACMAN){
+          if((*thefield)[y][x] == PACMAN){
               this -> posX = x;
               this -> posY = y;
             }
@@ -38,25 +40,25 @@ player::player(array<array<uint8_t, WIDTH>, HIGH> field){
     }
 }
 
-void player::move(array<array<uint8_t, WIDTH>, HIGH> *field){
+void player::move(){
     if(this->delayCounter == this->baseDelay){
         this->delayCounter = 0;
         this->symbol = !this->symbol;
-        (*field)[this->posY][this->posX] = ROAD;
+        (*this->field)[this->posY][this->posX] = ROAD;
         switch(this -> direction){
             case 0: this->posY--; break;
             case 1: this->posX++; break;
             case 2: this->posY++; break;
             case 3: this->posX--; break;
         }
-        if((*field)[this->posY][this->posX] != WALL){
-            if((*field)[this->posY][this->posX] == ROADWITHCOIN) this->coins++;
-            if((*field)[this->posY][this->posX] == POWERUP) this->getpowerup = true;
-            if((*field)[this->posY][this->posX] == ENEMY){
+        if((*this->field)[this->posY][this->posX] != WALL){
+            if((*this->field)[this->posY][this->posX] == ROADWITHCOIN) this->coins++;
+            if((*this->field)[this->posY][this->posX] == POWERUP) this->getpowerup = true;
+            if((*this->field)[this->posY][this->posX] == ENEMY){
                 this->alive--;
                 this->deathAnimation();
             }
-            (*field)[this->posY][this->posX] = PACMAN;
+            (*this->field)[this->posY][this->posX] = PACMAN;
         }else{
             switch(this -> direction){
                 case 2: this->posY--; break;
@@ -64,7 +66,7 @@ void player::move(array<array<uint8_t, WIDTH>, HIGH> *field){
                 case 0: this->posY++; break;
                 case 1: this->posX--; break;
             }
-        (*field)[this->posY][this->posX] = PACMAN;
+        (*this->field)[this->posY][this->posX] = PACMAN;
         }
     }else{
         this->delayCounter++;

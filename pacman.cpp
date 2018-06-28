@@ -6,6 +6,8 @@
 #include "header/random.h"
 #include "header/enemy.h"
 #include "header/powerup.h"
+#include "header/pathfinder.h"
+#include "header/draw.h"
 #include <array>
 #include <map>
 #include <unistd.h>
@@ -15,40 +17,10 @@
 
 using namespace std;
 
-map<int, string> fieldTextures;
 array<array<uint8_t, WIDTH>, HIGH>* enemy::field;
+array<array<uint8_t, WIDTH>, HIGH>* pathfinder::field;
 
-/**
- * @brief fills fieldTextures with Textures
- */
-void getColors(){
-        fieldTextures[ROADWITHCOIN] = "\033[48;5;7;38;5;2m$ ";
-        fieldTextures[ROAD] = "\033[48;5;7m  ";
-        fieldTextures[WALL] = "\033[48;5;236m  ";
-        fieldTextures[PACMAN] =  "\033[48;5;7;38;5;3mᗤ ";
-        fieldTextures[ENEMY] =  "\033[48;5;7;38;5;9m۩ ";
-        fieldTextures[PACMANSEARCH] = "\033[48;5;8;38;5;3m+ ";
-        fieldTextures[POWERUP] = "\033[48;5;7;38;5;5m⏻ ";
-}
 
-/**
- * @brief draws the field
- * 
- * @param field is the field you wanna draw
- * @param pacman is your playable caracter
- */
-void draw(array<array<uint8_t, WIDTH>, HIGH> field, player *pacman){
-        system("clear");
-        for(int i = 0; i < HIGH; i++){
-                for(int a = 0; a < WIDTH; a++){
-                        if(field[i][a] == PACMAN){
-                             cout << pacman->getsymbol() << "\033[0m";
-                        }else{cout << fieldTextures[field[i][a]] << "\033[0m";}
-                }
-                cout << endl;
-        }
-        cout << "SCORE: " << (int)pacman->coins << endl << "LIVES: " << (int)pacman->alive << endl;
-}
 
 array<array<uint8_t, WIDTH>, HIGH> locatepacman(array<array<uint8_t, WIDTH>, HIGH> field){
         for(int y = 0; y < HIGH; y++){
@@ -92,8 +64,9 @@ int main() {
         //enterseed();
         getColors();
         array<array<uint8_t, WIDTH>, HIGH> field = generateField();
-        player pacman(field);
+        player pacman(&field);
         enemy::field = &field;
+        pathfinder::field = &field;
         vector<enemy> enemyvector;
         for(uint8_t i = 0; i < NUMBEROFENEMYS; i++){
                 enemyvector.push_back(enemy(pacman.posY, pacman.posX));
@@ -109,7 +82,7 @@ int main() {
                 this_thread::sleep_for(chrono::milliseconds(30));
                 for(uint8_t i = 0; i < enemyvector.size(); i++){
                         if(enemyvector[i].alive){
-                                if(enemyvector[i].move()){
+                                if(enemyvector[i].move(pacman.posY, pacman.posX)){
                                         pacman.deathAnimation();
                                         enemyvector[i].alive = false;
                                         pacman.alive--;
@@ -117,7 +90,7 @@ int main() {
                         }
                 }
                 eingabe((&pacman));
-                pacman.move(&field);
+                pacman.move();
         }
         field[pacman.posY][pacman.posX] = PACMAN;
         draw(field, &pacman);
