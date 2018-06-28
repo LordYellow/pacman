@@ -88,40 +88,39 @@ bool enemy::youDontSeePacman(){
 bool enemy::youSeePacman(){
     if((*this->field)[this->posY+1][this->posX] == PACMAN){return true;}
     if((*this->field)[this->posY-1][this->posX] == PACMAN){return true;}
-        if((*this->field)[this->posY][this->posX+1] == PACMAN){return true;}
-        if((*this->field)[this->posY][this->posX-1] == PACMAN){return true;}
-        
-        vector<pathfinder> pathVector1, pathVector2;
-        (*this->field)[this->posY][this->posX] = this->lastfield;
-        array<array<uint8_t, WIDTH>, HIGH> originalfield = *field;
-        (*this->field)[this->posY][this->posX] = WALL;
-        if((*this->field)[this->posY+1][this->posX] != WALL){pathVector1.push_back(pathfinder(this->posY+1, this->posX, this->field));}
-        if((*this->field)[this->posY-1][this->posX] != WALL){pathVector1.push_back(pathfinder(this->posY-1, this->posX, this->field));}
-        if((*this->field)[this->posY][this->posX+1] != WALL){pathVector1.push_back(pathfinder(this->posY, this->posX+1, this->field));}
-        if((*this->field)[this->posY][this->posX-1] != WALL){pathVector1.push_back(pathfinder(this->posY, this->posX-1, this->field));}
-        player pm(this->field);
-        for(;;){
-            for(uint8_t i = 0; i < pathVector1.size(); i++){
-                if(pathVector1[i].pacmanIsNear){
-                    this->posY = pathVector1[i].originalY;
-                    this->posX = pathVector1[i].originalX;
-                    (*this->field) = originalfield;
-                    (*this->field)[this->posY][this->posX] = ENEMY;
-                    return false;
-                }
-                if(pathVector1[i].connections == 0){
-                    pathVector1.erase(pathVector1.begin()+i);
-                }
-                for(uint8_t a = 0; a < pathVector1[i].connections; a++){
-                    pathfinder path = pathVector1[i].findaWay();
-                    if(path != pathVector1[i]){
-                        pathVector2.push_back(path);
-                    }
+    if((*this->field)[this->posY][this->posX+1] == PACMAN){return true;}
+    if((*this->field)[this->posY][this->posX-1] == PACMAN){return true;}
+    
+    vector<pathfinder> pathVector1, pathVector2;
+    (*this->field)[this->posY][this->posX] = this->lastfield;
+    array<array<uint8_t, WIDTH>, HIGH> originalfield = *field;
+    (*this->field)[this->posY][this->posX] = WALL;
+    if((*this->field)[this->posY+1][this->posX] != WALL){pathVector1.push_back(pathfinder(this->posY+1, this->posX, this->field));}
+    if((*this->field)[this->posY-1][this->posX] != WALL){pathVector1.push_back(pathfinder(this->posY-1, this->posX, this->field));}
+    if((*this->field)[this->posY][this->posX+1] != WALL){pathVector1.push_back(pathfinder(this->posY, this->posX+1, this->field));}
+    if((*this->field)[this->posY][this->posX-1] != WALL){pathVector1.push_back(pathfinder(this->posY, this->posX-1, this->field));}
+    for(;;){
+        for(uint8_t i = 0; i < pathVector1.size(); i++){
+            if(pathVector1[i].pacmanIsNear){
+                this->posY = pathVector1[i].originalY;
+                this->posX = pathVector1[i].originalX;
+                (*this->field) = originalfield;
+                (*this->field)[this->posY][this->posX] = ENEMY;
+                return false;
+            }
+            if(pathVector1[i].connections == 0){
+                pathVector1.erase(pathVector1.begin()+i);
+            }
+            for(uint8_t a = 0; a < pathVector1[i].connections; a++){
+                pathfinder path = pathVector1[i].findaWay();
+                if(path != pathVector1[i]){
+                    pathVector2.push_back(path);
                 }
             }
-            pathVector1 = pathVector2;
-            pathVector2.clear();
         }
+        pathVector1 = pathVector2;
+        pathVector2.clear();
+    }
 }
 
 #endif
