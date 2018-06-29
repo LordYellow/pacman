@@ -14,8 +14,18 @@ public:
     uint8_t posX, posY, connections, originalX, originalY;
     static array<array<uint8_t, WIDTH>, HIGH> *field;
     
-    
+    /**
+     * @brief returns a new pathfinder connected to this one. you have to call this function for the number of connections to get enough pathfinders. if you already called it that many times this function will return itself
+     * 
+     * @return one connected pathfinder
+     */
     pathfinder findaWay();
+    
+    /**
+     * @brief calculates the number of possible connections 
+     * 
+     * @return the number of possible connections
+     */
     uint8_t numberOfConnections();
 };
 
@@ -54,7 +64,7 @@ pathfinder pathfinder::findaWay(){
     if((*this->field)[this->posY][this->posX+1] != WALL && (*this->field)[this->posY][this->posX+1] != USEDWAY){if((*this->field)[this->posY][this->posX+1] == PACMAN){this->pacmanIsNear = true;}else{return pathfinder(this, this->posY, this->posX+1);}}
     if((*this->field)[this->posY][this->posX-1] != WALL && (*this->field)[this->posY][this->posX-1] != USEDWAY){if((*this->field)[this->posY][this->posX-1] == PACMAN){this->pacmanIsNear = true;}else{return pathfinder(this, this->posY, this->posX-1);}}
     
-    return *this; //this should never happen, but i dislike the compiler warning
+    return *this; //this should never happen, but i dislike the compiler warning. if it happes (at the moment i am not sure if thats the case) it will not be pushed into the seccond vector
 }
 
 inline bool operator!=(const pathfinder &lhs, const pathfinder &rhs){ return !(lhs.posX == rhs.posX && lhs.posY == rhs.posY); }

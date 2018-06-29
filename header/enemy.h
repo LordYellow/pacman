@@ -19,10 +19,27 @@ public:
     bool alive = true;
     static array<array<uint8_t, WIDTH>, HIGH> *field;
     
+    /**
+     * @brief moves the enemy if you see Pacman
+     * 
+     * @return true if pacman gets killed
+     */
     bool youSeePacman();
+    
+    /**
+     * @brief moves the enemy if Pacman is not in Range
+     * 
+     * @return true if pacman gets killed
+     */
     bool youDontSeePacman();
+    
     /**
      * @brief moves the enemy
+     * 
+     * @param pacmanY is the Y coordinate of pacman 
+     * @param pacmanX is the X coordinate of pacman
+     * 
+     * @return true if pacman gets killed
      */
     bool move(uint8_t pacmanY, uint8_t pacmanX);
 };
@@ -46,7 +63,7 @@ bool enemy::move(uint8_t pacmanY, uint8_t pacmanX){
     if((*this->field)[this->posY][this->posX] != ENEMY){this->alive = false; return false;} //I dont know why i need this, but i think i will keep it for now
         if(this->delayCounter == this->baseDelay){
             this->delayCounter = 0;
-            if(sqrt(pow((this->posY-pacmanY),2)+pow((this->posX-pacmanX),2)) > 20){
+            if(sqrt(pow((this->posY-pacmanY),2)+pow((this->posX-pacmanX),2)) > PACMANDETECTIONRANGE){
                 return this->youDontSeePacman();
             }else{
                 return this->youSeePacman();
@@ -86,15 +103,17 @@ bool enemy::youDontSeePacman(){
 }
 
 bool enemy::youSeePacman(){
+    //this will check if pacman is near. if thats the case it will kill it 
     if((*this->field)[this->posY+1][this->posX] == PACMAN){return true;}
     if((*this->field)[this->posY-1][this->posX] == PACMAN){return true;}
     if((*this->field)[this->posY][this->posX+1] == PACMAN){return true;}
     if((*this->field)[this->posY][this->posX-1] == PACMAN){return true;}
     
     vector<pathfinder> pathVector1, pathVector2;
-    (*this->field)[this->posY][this->posX] = this->lastfield;
-    array<array<uint8_t, WIDTH>, HIGH> originalfield = *field;
+    (*this->field)[this->posY][this->posX] = this->lastfield; 
+    array<array<uint8_t, WIDTH>, HIGH> originalfield = *field; //saves the field, because the enemys will change it
     (*this->field)[this->posY][this->posX] = WALL;
+    //create pathfinders 
     if((*this->field)[this->posY+1][this->posX] != WALL){pathVector1.push_back(pathfinder(this->posY+1, this->posX, this->field));}
     if((*this->field)[this->posY-1][this->posX] != WALL){pathVector1.push_back(pathfinder(this->posY-1, this->posX, this->field));}
     if((*this->field)[this->posY][this->posX+1] != WALL){pathVector1.push_back(pathfinder(this->posY, this->posX+1, this->field));}
@@ -102,6 +121,7 @@ bool enemy::youSeePacman(){
     for(;;){
         for(uint8_t i = 0; i < pathVector1.size(); i++){
             if(pathVector1[i].pacmanIsNear){
+                // here the enemy will use the shortest way to pacman
                 this->posY = pathVector1[i].originalY;
                 this->posX = pathVector1[i].originalX;
                 (*this->field) = originalfield;
