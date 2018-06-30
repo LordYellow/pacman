@@ -87,6 +87,8 @@ int main() {
                                         enemyvector[i].alive = false;
                                         pacman.alive--;
                                 }
+                        }else{
+                                enemyvector.erase(enemyvector.begin()+i);
                         }
                 }
                 eingabe((&pacman));
