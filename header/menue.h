@@ -4,8 +4,18 @@
 #include <array>
 #include "stuffididnotwrite.h"
 #include <thread>
+#include <fstream>
 
 using namespace std;
+
+void showHighscores(){
+    ifstream readHighscores("savefiles/highscores");
+    if(readHighscores.is_open()){
+        
+    }else{
+        cout << "Unable to open File" << endl;
+    }
+}
 
 void loadingscreen(){
     system("clear");
@@ -52,7 +62,7 @@ bool menue(){
         if(selection(&Highlighted)){
             switch(Highlighted){
                 case 0: return false;
-                case 1: break; //tbd
+                case 1: showHighscores(); break; //tbd
                 case 2: return true;
             }
         }
