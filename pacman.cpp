@@ -61,41 +61,42 @@ void eingabe(player *pacman){
 }
 
 int main() {
-        if(menue()){return 0;}else{loadingscreen();}
-        getColors();
-        array<array<uint8_t, WIDTH>, HIGH> field = generateField();
-        player pacman(&field);
-        enemy::field = &field;
-        pathfinder::field = &field;
-        vector<enemy> enemyvector;
-        for(uint8_t i = 0; i < NUMBEROFENEMYS; i++){
-                enemyvector.push_back(enemy(pacman.posY, pacman.posX));
-        }
-        draw(locatepacman(field), &pacman);
-        for(;;){if(_kbhit()) break;}
-        while(pacman.alive){
-                draw(field, &pacman);
-                if(pacman.getpowerup){
-                        givePowerup(&pacman);
-                        pacman.getpowerup = false;
+        while(true){
+                if(menue()){return 0;}else{loadingscreen();}
+                getColors();
+                array<array<uint8_t, WIDTH>, HIGH> field = generateField();
+                player pacman(&field);
+                enemy::field = &field;
+                pathfinder::field = &field;
+                vector<enemy> enemyvector;
+                for(uint8_t i = 0; i < NUMBEROFENEMYS; i++){
+                        enemyvector.push_back(enemy(pacman.posY, pacman.posX));
                 }
-                this_thread::sleep_for(chrono::milliseconds(30));
-                for(uint8_t i = 0; i < enemyvector.size(); i++){
-                        if(enemyvector[i].alive){
-                                if(enemyvector[i].move(pacman.posY, pacman.posX)){
-                                        pacman.deathAnimation();
-                                        enemyvector[i].alive = false;
-                                        pacman.alive--;
-                                }
-                        }else{
-                                enemyvector.erase(enemyvector.begin()+i);
+                draw(locatepacman(field), &pacman);
+                for(;;){if(_kbhit()) break;}
+                while(pacman.alive){
+                        draw(field, &pacman);
+                        if(pacman.getpowerup){
+                                givePowerup(&pacman);
+                                pacman.getpowerup = false;
                         }
+                        this_thread::sleep_for(chrono::milliseconds(30));
+                        for(uint8_t i = 0; i < enemyvector.size(); i++){
+                                if(enemyvector[i].alive){
+                                        if(enemyvector[i].move(pacman.posY, pacman.posX)){
+                                                pacman.deathAnimation();
+                                                enemyvector[i].alive = false;
+                                                pacman.alive--;
+                                        }
+                                }else{
+                                        enemyvector.erase(enemyvector.begin()+i);
+                                }
+                        }
+                        eingabe((&pacman));
+                        pacman.move();
                 }
-                eingabe((&pacman));
-                pacman.move();
+                field[pacman.posY][pacman.posX] = PACMAN;
+                draw(field, &pacman);
+                gameover(&pacman);
         }
-        field[pacman.posY][pacman.posX] = PACMAN;
-        draw(field, &pacman);
-        cout << "GAME OVER" << endl;
-        return 0;
 }

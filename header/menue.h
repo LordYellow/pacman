@@ -5,16 +5,51 @@
 #include "stuffididnotwrite.h"
 #include <thread>
 #include <fstream>
+#include "highscore.h"
+#include <vector>
+#include <algorithm>
 
 using namespace std;
 
+void gameover(player *pacman){
+    ofstream setHighscore("pacman/safefiles/highscores", ios::app);
+    cout << "GAMEOVER" << endl;
+    string name;
+    cout << "ENTER YOUR NAME: " << flush;
+    getline(cin, name);
+    setHighscore << name << endl << (int)pacman->coins << endl;
+    setHighscore.close();
+}
+
+vector<highscore> getHighscoreVector(ifstream *readHighscores){
+    vector<highscore> highscorevector;
+    while((*readHighscores).peek() != EOF){
+        string name, score; // I think this bad, but i dont habe a better solution at the moment 
+        getline(*readHighscores, name);
+        getline(*readHighscores, score);
+        highscorevector.push_back(highscore(name, (uint)stoi(score)));
+    }
+    sort(highscorevector.begin(), highscorevector.end());
+    reverse(highscorevector.begin(), highscorevector.end()); // I know that this is not the most efficent solution
+    return highscorevector;
+}
+
 void showHighscores(){
-    ifstream readHighscores("savefiles/highscores");
+    ifstream readHighscores;
+    readHighscores.open("pacman/safefiles/highscores");
     if(readHighscores.is_open()){
+        vector<highscore> scores = getHighscoreVector(&readHighscores);
+        system("clear");
+        for(uint8_t i = 0; i < scores.size() && i < 5; i++){
+            cout << scores[i] << endl;
+        }
+        while(!_kbhit()){}
         
     }else{
         cout << "Unable to open File" << endl;
+        while(!_kbhit()){}
     }
+    readHighscores.close();
 }
 
 void loadingscreen(){
@@ -62,7 +97,7 @@ bool menue(){
         if(selection(&Highlighted)){
             switch(Highlighted){
                 case 0: return false;
-                case 1: showHighscores(); break; //tbd
+                case 1: showHighscores(); break;
                 case 2: return true;
             }
         }
