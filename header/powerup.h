@@ -29,15 +29,20 @@ void giveMovementSpeed(player *pacman){
         pacman->baseDelay--;
         powerUpNotification("Movement Speed increased!");
     }else{
-        powerUpNotification("Your are as fast at the light!");
+        powerUpNotification("Your are as fast as the light!");
     }
 }
 
+void giveWallCrushing(player *pacman){
+    pacman->crushWalls+=10;
+    powerUpNotification("With this Tunfischproteinshake you can Crush this Walls!");
+}
+
 void givePowerup(player *pacman){
-    switch(rand() % 2){
+    switch(rand() % 3){
         case 0: giveLife(pacman); break;
         case 1: giveMovementSpeed(pacman); break;
-        
+        case 2: giveWallCrushing(pacman); break;
         default: powerUpNotification("Nothing :("); break; //this will never happen, but just in case...
     }
 }

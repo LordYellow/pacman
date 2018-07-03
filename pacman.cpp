@@ -8,6 +8,7 @@
 #include "header/powerup.h"
 #include "header/pathfinder.h"
 #include "header/draw.h"
+#include "header/menue.h"
 #include <array>
 #include <map>
 #include <unistd.h>
@@ -60,8 +61,7 @@ void eingabe(player *pacman){
 }
 
 int main() {
-        //pacman tbd
-        //enterseed();
+        if(menue()){return 0;}else{loadingscreen();}
         getColors();
         array<array<uint8_t, WIDTH>, HIGH> field = generateField();
         player pacman(&field);

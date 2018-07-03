@@ -10,7 +10,7 @@
 class player {
 public:
     player(array<array<uint8_t, WIDTH>, HIGH> *field);
-    uint8_t direction = 0, posX= 0, posY = 0, coins = 0, baseDelay = 10, delayCounter = 0, alive =1;
+    uint8_t direction = 0, posX= 0, posY = 0, coins = 0, baseDelay = 10, delayCounter = 0, alive =1, crushWalls = 0;
     bool getpowerup = false, symbol = false;
     array<array<uint8_t, WIDTH>, HIGH> *field;
     string getsymbol();
@@ -51,7 +51,7 @@ void player::move(){
             case 2: this->posY++; break;
             case 3: this->posX--; break;
         }
-        if((*this->field)[this->posY][this->posX] != WALL){
+        if(crushWalls && (*this->field)[this->posY][this->posX] == WALL){
             if((*this->field)[this->posY][this->posX] == ROADWITHCOIN) this->coins++;
             if((*this->field)[this->posY][this->posX] == POWERUP) this->getpowerup = true;
             if((*this->field)[this->posY][this->posX] == ENEMY){
@@ -59,14 +59,25 @@ void player::move(){
                 this->deathAnimation();
             }
             (*this->field)[this->posY][this->posX] = PACMAN;
+            this->crushWalls--;
         }else{
-            switch(this -> direction){
-                case 2: this->posY--; break;
-                case 3: this->posX++; break;
-                case 0: this->posY++; break;
-                case 1: this->posX--; break;
+            if((*this->field)[this->posY][this->posX] != WALL){
+                if((*this->field)[this->posY][this->posX] == ROADWITHCOIN) this->coins++;
+                if((*this->field)[this->posY][this->posX] == POWERUP) this->getpowerup = true;
+                if((*this->field)[this->posY][this->posX] == ENEMY){
+                    this->alive--;
+                    this->deathAnimation();
+                }
+                (*this->field)[this->posY][this->posX] = PACMAN;
+            }else{
+                switch(this -> direction){
+                    case 2: this->posY--; break;
+                    case 3: this->posX++; break;
+                    case 0: this->posY++; break;
+                    case 1: this->posX--; break;
+                }
+            (*this->field)[this->posY][this->posX] = PACMAN;
             }
-        (*this->field)[this->posY][this->posX] = PACMAN;
         }
     }else{
         this->delayCounter++;

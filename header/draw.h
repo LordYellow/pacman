@@ -38,7 +38,7 @@ void draw(array<array<uint8_t, WIDTH>, HIGH> field, player *pacman){
                 }
                 cout << endl;
         }
-        cout << "SCORE: " << (int)pacman->coins << endl << "LIVES: " << (int)pacman->alive << endl;
+        cout << "SCORE: " << (int)pacman->coins << endl << "LIVES: " << (int)pacman->alive << endl << "ABILITY TO CRUSH WALLS: " << (int)pacman->crushWalls << endl;
 }
 
 #endif
