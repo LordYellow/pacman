@@ -4,6 +4,7 @@
 #include "player.h"
 #include <string>
 #include "stuffididnotwrite.h"
+#include "field.h"
 
 void powerUpNotification(string effect){
     cout << "\033[48;5;8;38;5;4m" << "\033[" << to_string(HIGH/2-1) << ";" << to_string(WIDTH-(effect.length())/2) << "H";

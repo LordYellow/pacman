@@ -3,6 +3,7 @@
 
 #include <map>
 #include <iostream>
+#include "field.h"
 
 using namespace std;
 
@@ -39,6 +40,22 @@ void draw(array<array<uint8_t, WIDTH>, HIGH> field, player *pacman){
                 cout << endl;
         }
         cout << "SCORE: " << (int)pacman->coins << endl << "LIVES: " << (int)pacman->alive << endl << "ABILITY TO CRUSH WALLS: " << (int)pacman->crushWalls << endl;
+}
+
+void drawOnlyNewStuff(field Field, player *pacman){
+    for(uint8_t y = 0; y < HIGH; y++){
+        for(uint8_t x = 0; x < WIDTH; x++){
+            if(Field.bField[y][x]){
+                cout << "\033[48;5;8;38;5;4m" << "\033[" << to_string(y+1) << ";" << to_string(2*x+1) << "H";
+                if(Field.getFieldValue(y,x) == PACMAN){
+                    cout << pacman->getsymbol() << "\033[0m";
+                }else{cout << fieldTextures[Field.getFieldValue(y,x)] << "\033[0m";}
+            }
+        }
+    }
+    cout << "\033[48;5;8;38;5;4m" << "\033[" << to_string(HIGH+1) << ";" << "0" << "H" << "\033[0m";
+    cout << "SCORE: " << (int)pacman->coins << endl << "LIVES: " << (int)pacman->alive << endl << "ABILITY TO CRUSH WALLS: " << (int)pacman->crushWalls << endl;
+    cout << flush;
 }
 
 #endif

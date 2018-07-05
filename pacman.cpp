@@ -9,6 +9,7 @@
 #include "header/pathfinder.h"
 #include "header/draw.h"
 #include "header/menue.h"
+#include "header/field.h"
 #include <array>
 #include <map>
 #include <unistd.h>
@@ -18,7 +19,7 @@
 
 using namespace std;
 
-array<array<uint8_t, WIDTH>, HIGH>* enemy::field;
+field* enemy::Field;
 array<array<uint8_t, WIDTH>, HIGH>* pathfinder::field;
 
 
@@ -64,21 +65,25 @@ int main() {
         while(true){
                 if(menue()){return 0;}else{loadingscreen();}
                 getColors();
-                array<array<uint8_t, WIDTH>, HIGH> field = generateField();
+                field field(generateField());
                 player pacman(&field);
-                enemy::field = &field;
-                pathfinder::field = &field;
+                enemy::Field = &field;
+                pathfinder::field = &(field.Field);
                 vector<enemy> enemyvector;
                 for(uint8_t i = 0; i < NUMBEROFENEMYS; i++){
                         enemyvector.push_back(enemy(pacman.posY, pacman.posX));
                 }
-                draw(locatepacman(field), &pacman);
+                draw(locatepacman(field.Field), &pacman);
                 for(;;){if(_kbhit()) break;}
+                draw(field.Field, &pacman);
                 while(pacman.alive){
-                        draw(field, &pacman);
+                        //draw(field.Field, &pacman);
+                        drawOnlyNewStuff(field, &pacman);
+                        field.resetbField();
                         if(pacman.getpowerup){
                                 givePowerup(&pacman);
                                 pacman.getpowerup = false;
+                                draw(field.Field, &pacman);
                         }
                         this_thread::sleep_for(chrono::milliseconds(30));
                         for(uint8_t i = 0; i < enemyvector.size(); i++){
@@ -95,8 +100,8 @@ int main() {
                         eingabe((&pacman));
                         pacman.move();
                 }
-                field[pacman.posY][pacman.posX] = PACMAN;
-                draw(field, &pacman);
+                field.changeFieldValue(pacman.posY, pacman.posX, PACMAN);
+                draw(field.Field, &pacman);
                 gameover(&pacman);
         }
 }
