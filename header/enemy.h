@@ -125,6 +125,7 @@ bool enemy::youSeePacman(){
                 this->Field->changeFieldValue(this->posY, this->posX, this->lastfield);
                 this->posY = pathVector1[i].originalY;
                 this->posX = pathVector1[i].originalX;
+                this->lastfield = this->Field->getFieldValue(this->posY, this->posX);
                 this->Field->changeFieldValue(this->posY, this->posX, ENEMY);
                 return false;
             }
