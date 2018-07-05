@@ -90,6 +90,7 @@ int main() {
                                 if(enemyvector[i].alive){
                                         if(enemyvector[i].move(pacman.posY, pacman.posX)){
                                                 pacman.deathAnimation();
+                                                draw(field.Field, &pacman);
                                                 enemyvector[i].alive = false;
                                                 pacman.alive--;
                                         }
