@@ -21,6 +21,8 @@ void getColors(){
         fieldTextures[PACMANSEARCH] = "\033[48;5;8;38;5;3m+ ";
         fieldTextures[POWERUP] = "\033[48;5;7;38;5;5m⏻ ";
         fieldTextures[USEDWAY] = "\033[48;5;2m  ";
+        fieldTextures[LOWERWALL] = "\033[48;5;244m  ";
+        fieldTextures[SHOT] = "\033[48;5;13m* ";
 }
 
 /**

@@ -51,18 +51,18 @@ pathfinder::pathfinder(pathfinder* oldpath, uint8_t y, uint8_t x){
 
 uint8_t pathfinder::numberOfConnections(){
     uint8_t conns = 0;
-    if((*this->field)[this->posY+1][this->posX] != WALL && (*this->field)[this->posY+1][this->posX] != USEDWAY){if((*this->field)[this->posY+1][this->posX] == PACMAN){this->pacmanIsNear = true; conns++;}else{conns++;}}
-    if((*this->field)[this->posY-1][this->posX] != WALL && (*this->field)[this->posY-1][this->posX] != USEDWAY){if((*this->field)[this->posY-1][this->posX] == PACMAN){this->pacmanIsNear = true; conns++;}else{conns++;}}
-    if((*this->field)[this->posY][this->posX+1] != WALL && (*this->field)[this->posY][this->posX+1] != USEDWAY){if((*this->field)[this->posY][this->posX+1] == PACMAN){this->pacmanIsNear = true; conns++;}else{conns++;}}
-    if((*this->field)[this->posY][this->posX-1] != WALL && (*this->field)[this->posY][this->posX-1] != USEDWAY){if((*this->field)[this->posY][this->posX-1] == PACMAN){this->pacmanIsNear = true; conns++;}else{conns++;}}
+    if((*this->field)[this->posY+1][this->posX] != WALL && (*this->field)[this->posY+1][this->posX] != USEDWAY && (*this->field)[this->posY+1][this->posX] != LOWERWALL){if((*this->field)[this->posY+1][this->posX] == PACMAN){this->pacmanIsNear = true; conns++;}else{conns++;}}
+    if((*this->field)[this->posY-1][this->posX] != WALL && (*this->field)[this->posY-1][this->posX] != USEDWAY && (*this->field)[this->posY-1][this->posX] != LOWERWALL){if((*this->field)[this->posY-1][this->posX] == PACMAN){this->pacmanIsNear = true; conns++;}else{conns++;}}
+    if((*this->field)[this->posY][this->posX+1] != WALL && (*this->field)[this->posY][this->posX+1] != USEDWAY && (*this->field)[this->posY][this->posX+1] != LOWERWALL){if((*this->field)[this->posY][this->posX+1] == PACMAN){this->pacmanIsNear = true; conns++;}else{conns++;}}
+    if((*this->field)[this->posY][this->posX-1] != WALL && (*this->field)[this->posY][this->posX-1] != USEDWAY && (*this->field)[this->posY][this->posX-1] != LOWERWALL){if((*this->field)[this->posY][this->posX-1] == PACMAN){this->pacmanIsNear = true; conns++;}else{conns++;}}
     return conns;
 }
 
 pathfinder pathfinder::findaWay(){
-    if((*this->field)[this->posY+1][this->posX] != WALL && (*this->field)[this->posY+1][this->posX] != USEDWAY){if((*this->field)[this->posY+1][this->posX] == PACMAN){this->pacmanIsNear = true;}else{return pathfinder(this, this->posY+1, this->posX);}}
-    if((*this->field)[this->posY-1][this->posX] != WALL && (*this->field)[this->posY-1][this->posX] != USEDWAY){if((*this->field)[this->posY-1][this->posX] == PACMAN){this->pacmanIsNear = true;}else{return pathfinder(this, this->posY-1, this->posX);}}
-    if((*this->field)[this->posY][this->posX+1] != WALL && (*this->field)[this->posY][this->posX+1] != USEDWAY){if((*this->field)[this->posY][this->posX+1] == PACMAN){this->pacmanIsNear = true;}else{return pathfinder(this, this->posY, this->posX+1);}}
-    if((*this->field)[this->posY][this->posX-1] != WALL && (*this->field)[this->posY][this->posX-1] != USEDWAY){if((*this->field)[this->posY][this->posX-1] == PACMAN){this->pacmanIsNear = true;}else{return pathfinder(this, this->posY, this->posX-1);}}
+    if((*this->field)[this->posY+1][this->posX] != WALL && (*this->field)[this->posY+1][this->posX] != USEDWAY && (*this->field)[this->posY+1][this->posX] != LOWERWALL){if((*this->field)[this->posY+1][this->posX] == PACMAN){this->pacmanIsNear = true;}else{return pathfinder(this, this->posY+1, this->posX);}}
+    if((*this->field)[this->posY-1][this->posX] != WALL && (*this->field)[this->posY-1][this->posX] != USEDWAY && (*this->field)[this->posY-1][this->posX] != LOWERWALL){if((*this->field)[this->posY-1][this->posX] == PACMAN){this->pacmanIsNear = true;}else{return pathfinder(this, this->posY-1, this->posX);}}
+    if((*this->field)[this->posY][this->posX+1] != WALL && (*this->field)[this->posY][this->posX+1] != USEDWAY && (*this->field)[this->posY][this->posX+1] != LOWERWALL){if((*this->field)[this->posY][this->posX+1] == PACMAN){this->pacmanIsNear = true;}else{return pathfinder(this, this->posY, this->posX+1);}}
+    if((*this->field)[this->posY][this->posX-1] != WALL && (*this->field)[this->posY][this->posX-1] != USEDWAY && (*this->field)[this->posY][this->posX-1] != LOWERWALL){if((*this->field)[this->posY][this->posX-1] == PACMAN){this->pacmanIsNear = true;}else{return pathfinder(this, this->posY, this->posX-1);}}
     
     return *this; //this should never happen, but i dislike the compiler warning. if it happes (at the moment i am not sure if thats the case) it will not be pushed into the seccond vector
 }

@@ -11,7 +11,8 @@
 class player {
 public:
     player(field *thefield);
-    uint8_t direction = 0, posX= 0, posY = 0, coins = 0, baseDelay = 10, delayCounter = 0, alive =1, crushWalls = 0;
+    uint8_t direction = 0, posX= 0, posY = 0, coins = 0, baseDelay = 10, delayCounter = 0, crushWalls = 0;
+    int alive = 1;
     bool getpowerup = false, symbol = false;
     field *Field;
     string getsymbol();
@@ -52,7 +53,7 @@ void player::move(){
             case 2: this->posY++; break;
             case 3: this->posX--; break;
         }
-        if(crushWalls && this->Field->getFieldValue(this->posY, this->posX) == WALL){
+        if(crushWalls && (this->Field->getFieldValue(this->posY, this->posX) == WALL || this->Field->getFieldValue(this->posY, this->posX) == LOWERWALL)){
             if(this->Field->getFieldValue(this->posY, this->posX) == ROADWITHCOIN) this->coins++;
             if(this->Field->getFieldValue(this->posY, this->posX) == POWERUP) this->getpowerup = true;
             if(this->Field->getFieldValue(this->posY, this->posX) == ENEMY){
@@ -62,7 +63,7 @@ void player::move(){
             this->Field->changeFieldValue(this->posY, this->posX, PACMAN);
             this->crushWalls--;
         }else{
-            if(this->Field->getFieldValue(this->posY, this->posX) != WALL){
+            if(this->Field->getFieldValue(this->posY, this->posX) != WALL && this->Field->getFieldValue(this->posY, this->posX) != LOWERWALL){
                 if(this->Field->getFieldValue(this->posY, this->posX) == ROADWITHCOIN) this->coins++;
                 if(this->Field->getFieldValue(this->posY, this->posX) == POWERUP) this->getpowerup = true;
                 if(this->Field->getFieldValue(this->posY, this->posX) == ENEMY){

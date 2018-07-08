@@ -14,5 +14,9 @@
 #define NUMBEROFPOWERUPS 20
 #define USEDWAY 8
 #define PACMANDETECTIONRANGE 20
+#define LOWERWALL 9
+#define NUMBEROFLOWWALLS 10
+#define SHOTRANGE 8
+#define SHOT 10
 
 #endif

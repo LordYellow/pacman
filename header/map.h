@@ -130,6 +130,21 @@ bool MatchingPartExists(array<array<uint8_t, WIDTH/3+2>, HIGH/3+2> fieldParts, u
   return false;
 }
 
+bool setLowerWall(array<array<uint8_t, WIDTH>, HIGH> *field, uint8_t y, uint8_t x, bool firstCall){
+    if((*field)[y][x] == WALL){
+        (*field)[y][x] = LOWERWALL;
+        if(rand() % 2 || firstCall){
+            setLowerWall(field, y+1, x, false);
+            setLowerWall(field, y-1, x, false);
+            setLowerWall(field, y, x+1, false);
+            setLowerWall(field, y, x-1, false);
+        }
+        return true;
+    }else{
+        return false;
+    }
+}
+
 /**
  * @brief generates a field
  * 
@@ -196,6 +211,9 @@ array<array<uint8_t, WIDTH>, HIGH> generateField(){
                     break;
                 }
             }
+        }
+        for(int i = 0; i < NUMBEROFLOWWALLS;){
+            if(setLowerWall(&field, rand() % HIGH, rand() % WIDTH, true)) i++;
         }
         return field;
     }

@@ -10,6 +10,7 @@
 #include "header/draw.h"
 #include "header/menue.h"
 #include "header/field.h"
+#include "header/shot.h"
 #include <array>
 #include <map>
 #include <unistd.h>
@@ -20,6 +21,7 @@
 using namespace std;
 
 field* enemy::Field;
+field* shot::Field;
 array<array<uint8_t, WIDTH>, HIGH>* pathfinder::field;
 
 
@@ -68,8 +70,10 @@ int main() {
                 field field(generateField());
                 player pacman(&field);
                 enemy::Field = &field;
+                shot::Field = &field;
                 pathfinder::field = &(field.Field);
                 vector<enemy> enemyvector;
+                vector<shot> shotvector;
                 for(uint8_t i = 0; i < NUMBEROFENEMYS; i++){
                         enemyvector.push_back(enemy(pacman.posY, pacman.posX));
                 }
@@ -77,8 +81,8 @@ int main() {
                 for(;;){if(_kbhit()) break;}
                 draw(field.Field, &pacman);
                 while(pacman.alive){
-                        //draw(field.Field, &pacman);
                         drawOnlyNewStuff(field, &pacman);
+                        cout << shotvector.size() << endl;
                         field.resetbField();
                         if(pacman.getpowerup){
                                 givePowerup(&pacman);
@@ -94,8 +98,23 @@ int main() {
                                                 enemyvector[i].alive = false;
                                                 pacman.alive--;
                                         }
+                                        if(enemyvector[i].shot(pacman.posY, pacman.posX)){
+                                                shotvector.push_back(shot(enemyvector[i].posY, enemyvector[i].posX, pacman.posY, pacman.posX));
+                                        }
                                 }else{
                                         enemyvector.erase(enemyvector.begin()+i);
+                                }
+                        }
+                        for(uint8_t i = 0; i < shotvector.size(); i++){
+                                if(shotvector[i].viableShot){
+                                        if(shotvector[i].move()){
+                                                pacman.deathAnimation();
+                                                draw(field.Field, &pacman);
+                                                shotvector[i].viableShot = false;
+                                                pacman.alive--;
+                                        }
+                                }else{
+                                        //shotvector.erase(shotvector.begin()+i);
                                 }
                         }
                         eingabe((&pacman));
