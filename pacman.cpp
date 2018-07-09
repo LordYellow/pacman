@@ -102,7 +102,10 @@ int main() {
                                                 shotvector.push_back(shot(enemyvector[i].posY, enemyvector[i].posX, pacman.posY, pacman.posX));
                                         }
                                 }else{
-                                        enemyvector.erase(enemyvector.begin()+i);
+                                        enemyvector[i].alive = true;
+                                        enemyvector[i].posX = WIDTH/2;
+                                        enemyvector[i].posY = HIGH/2;
+                                        field.changeFieldValue(HIGH/2, WIDTH/2, ENEMY);
                                 }
                         }
                         for(uint8_t i = 0; i < shotvector.size(); i++){

@@ -68,7 +68,7 @@ enemy::enemy(uint8_t pacmanY, uint8_t pacmanX){
 }
 
 bool enemy::move(uint8_t pacmanY, uint8_t pacmanX){
-    if(this->Field->getFieldValue(this->posY, this->posX) != ENEMY){this->alive = false; return false;} //I dont know why i need this, but i think i will keep it for now
+    if(this->Field->getFieldValue(this->posY, this->posX) != ENEMY && this->Field->getFieldValue(this->posY, this->posX) != SHOT){this->alive = false; return false;} //I dont know why i need this, but i think i will keep it for now
         if(this->delayCounter == this->baseDelay){
             this->delayCounter = 0;
             if(this->shotDelayCounter < this->shotDelay) this->shotDelayCounter++;
@@ -96,6 +96,7 @@ bool enemy::youDontSeePacman(){
                     if(this->Field->getFieldValue(this->posY, this->posX) == PACMAN){this->Field->changeFieldValue(this->posY, this->posX, ENEMY); return true;}
                     this->lastfield = this->Field->getFieldValue(this->posY, this->posX);
                     if(this->lastfield == ENEMY) this->lastfield = ROAD;
+                    if(this->lastfield == SHOT) this->lastfield = ROAD;
                     this->Field->changeFieldValue(this->posY, this->posX, ENEMY);
                     return false;
                 }else{
@@ -154,7 +155,7 @@ bool enemy::youSeePacman(){
 
 bool enemy::shot(uint8_t pacmanY, uint8_t pacmanX){
     if(this->shotDelayCounter != this->shotDelay) return false;
-    if(sqrt(pow((this->posY-pacmanY),2)+pow((this->posX-pacmanX),2)) > PACMANDETECTIONRANGE){
+    if(sqrt(pow((this->posY-pacmanY),2)+pow((this->posX-pacmanX),2)) < PACMANDETECTIONRANGE){
         this->shotDelayCounter = 0;
         return true;
     }else{
