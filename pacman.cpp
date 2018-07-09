@@ -5,6 +5,7 @@
 #include "header/enemy.h"
 #include "header/menue.h"
 #include "header/powerup.h"
+#include "header/shot.h"
 #include <array>
 #include <chrono>
 #include <thread>
@@ -17,6 +18,14 @@
 #include <sys/ioctl.h>
 
 using namespace std;
+
+void createShots(player *pacman, vector<shot> *shotVector, vector<enemy> *enemyVector, array<string, 8> *colors){
+        for(uint8_t i = 0; i < NUMBEROFENEMYS; i++){
+                if((*enemyVector)[i].shot()){
+                        (*shotVector).push_back(shot((*enemyVector)[i].posY, (*enemyVector)[i].posX, pacman->posY, pacman->posX, colors));
+                }
+        }
+}
 
 void didIdie(player *pacman, vector<enemy> *enemyVector){
         for(uint8_t i = 0; i < NUMBEROFENEMYS; i++){
@@ -66,6 +75,8 @@ int main() {
         vector<enemy> enemyVector; // i wanted to use an array here, but it was different...
         for(uint8_t i = 0; i < NUMBEROFENEMYS; i++){enemyVector.push_back(enemy(&field, &colors, &pacman));}
         
+        vector<shot> shotVector;
+        
         //locates pacman
         locatepacman(&pacman);
         
@@ -93,6 +104,13 @@ int main() {
                 
                 //moves the enemys
                 for(uint8_t i = 0; i < NUMBEROFENEMYS; i++){enemyVector[i].checkvisibility(&pacman); enemyVector[i].move();}
+                
+                //creates shots
+                createShots(&pacman, &shotVector, &enemyVector, &colors);
+                
+                for(uint8_t i = 0; i < shotVector.size(); i++){shotVector[i].move();}
+                
+                for(uint8_t i = 0; i < shotVector.size(); i++){if(!shotVector[i].viableShot) shotVector.erase(shotVector.begin()+i);}
                 
                 //checks if you are dead
                 didIdie(&pacman, &enemyVector);

@@ -45,6 +45,8 @@ public:
     void move();
     
     void checkvisibility(player *pacman);
+    
+    bool shot();
 };
 
 enemy::enemy(fieldtyp<uint8_t> *thefield, array<string, 8> *colors, player *pacman){
@@ -152,6 +154,16 @@ void enemy::checkvisibility(player *pacman){
         if((*this->field)[(int)(y + unitVectorY*i)][(int)(x + unitVectorX*i)] ==  WALL){this->visibility = false; return;}
     }
     //cin.ignore().get();
+}
+
+bool enemy::shot(){
+    if(this->shotDelayCounter != this->shotDelay || this->visibility == false) return false;
+    if(sqrt(pow((this->posY-pacman->posY),2)+pow((this->posX-pacman->posX),2)) < PACMANDETECTIONRANGE){
+        this->shotDelayCounter = 0;
+        return true;
+    }else{
+        return false;
+    }
 }
 
 #endif
