@@ -3,8 +3,6 @@
 
 #include "player.h"
 #include <string>
-#include "stuffididnotwrite.h"
-#include "field.h"
 
 void powerUpNotification(string effect){
     cout << "\033[48;5;8;38;5;4m" << "\033[" << to_string(HIGH/2-1) << ";" << to_string(WIDTH-(effect.length())/2) << "H";
@@ -17,7 +15,7 @@ void powerUpNotification(string effect){
     cout << "╘";
     for(uint8_t i = 0; i < effect.length()+2; i++){cout << "═";}
     cout << "╛" << "\033[0m" << endl;
-    while(!_kbhit()){}
+    cin.ignore().get();
 }
 
 void giveLife(player *pacman){

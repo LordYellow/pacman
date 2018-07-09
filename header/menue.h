@@ -8,11 +8,14 @@
 #include "highscore.h"
 #include <vector>
 #include <algorithm>
+#include <unistd.h>
+#include "random.h"
 
 using namespace std;
 
 void gameover(player *pacman){
-    ofstream setHighscore("pacman/safefiles/highscores", ios::app);
+    cout << "\033[48;5;8;38;5;4m" << "\033[" << to_string(HIGH+5) << ";" << "0" << "H" << "\033[0m" << endl;
+    ofstream setHighscore((string(get_current_dir_name()).append("/safefile")), ios::app);
     cout << "GAMEOVER" << endl;
     string name;
     cout << "ENTER YOUR NAME: " << flush;
@@ -36,18 +39,18 @@ vector<highscore> getHighscoreVector(ifstream *readHighscores){
 
 void showHighscores(){
     ifstream readHighscores;
-    readHighscores.open("pacman/safefiles/highscores");
+    readHighscores.open((string(get_current_dir_name()).append("/safefile")));
     if(readHighscores.is_open()){
         vector<highscore> scores = getHighscoreVector(&readHighscores);
         system("clear");
         for(uint8_t i = 0; i < scores.size() && i < 5; i++){
             cout << scores[i] << endl;
         }
-        while(!_kbhit()){}
+        cin.ignore().get();
         
     }else{
-        cout << "Unable to open File" << endl;
-        while(!_kbhit()){}
+        cout << "You dont Have a Highscore right now. Play the Game!" << endl;
+        cin.ignore().get();
     }
     readHighscores.close();
 }
@@ -68,7 +71,7 @@ void drawmenue(int Highlighted){
     cout << "\033[10;20H" << "╒═══════════════════════════╕" << "\033[0m" << endl;
     cout << "\033[11;20H" << "│  " << colors[0] << "          PLAY         " << "\033[0m" << "  │" << endl;
     cout << "\033[12;20H" << "│  " << colors[1] << "       HIGHSCORES      " << "\033[0m" << "  │" << endl;
-    cout << "\033[13;20H" << "│  " << colors[2] << "          END          " << "\033[0m" << "  │" << endl;
+    cout << "\033[13;20H" << "│  " << colors[2] << "      CHANGE SEED      " << "\033[0m" << "  │" << endl;
     cout << "\033[14;20H" << "╘═══════════════════════════╛" << "\033[0m" << endl;
 }
 
@@ -90,15 +93,23 @@ bool selection(int *Highlighted){
         return false;
 }
 
-bool menue(){
+void changeseed(){
+    string seedstring;
+    cout << "ENTER THE SEED: " << flush;
+    getline(cin, seedstring);
+    seed = stoi(seedstring);
+    
+}
+
+void menue(){
     int Highlighted = 0;
     for(;;){
         drawmenue(Highlighted);
         if(selection(&Highlighted)){
             switch(Highlighted){
-                case 0: return false;
+                case 0: return;
                 case 1: showHighscores(); break;
-                case 2: return true;
+                case 2: changeseed(); break;
             }
         }
         this_thread::sleep_for(chrono::milliseconds(30));

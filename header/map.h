@@ -10,6 +10,14 @@ using namespace std;
 
 bool possibleParts[17][3][3] = {{{0,1,0},{1,1,0},{0,0,0}},  {{0,1,0},{0,1,1},{0,0,0}},  {{0,0,0},{1,1,0},{0,1,0}},  {{0,0,0},{0,1,1},{0,1,0}},  {{0,1,0},{0,1,0},{0,1,0}},  {{0,0,0},{1,1,1},{0,0,0}},  {{0,1,0},{1,1,0},{0,1,0}},  {{0,1,0},{0,1,1},{0,1,0}},  {{0,1,0},{1,1,1},{0,0,0}},  {{0,0,0},{1,1,1},{0,1,0}},  {{0,1,0},{1,1,1},{0,1,0}}, {{0,0,0},{0,0,0},{0,0,0}}, {{0,1,0},{0,1,1},{0,1,1}},  {{0,1,0},{1,1,0},{1,1,0}},  {{0,1,1},{0,1,1},{0,0,0}},  {{1,1,0},{1,1,0},{0,0,0}}, {{1,1,1},{1,1,1},{1,1,1}}};
 
+void invertfield(fieldtyp<uint8_t> *field){
+    for(uint8_t y = 0; y < HIGH; y++){
+        for(uint8_t x = 0; x < WIDTH; x++){
+            if((*field)[y][x] == WALL){(*field)[y][x] = LOWERWALL;}else if((*field)[y][x] == LOWERWALL){(*field)[y][x] = WALL;}
+        }
+    }
+}
+
 /**
  * @brief checks if there is a road tile in the field
  * 
@@ -34,22 +42,20 @@ bool roadIsLeft(array<array<uint8_t, WIDTH>, HIGH> field){
  * @returns true if the field is viable 
  */
 bool FieldIsViable(array<array<uint8_t, WIDTH>, HIGH> field){
-
   for(uint8_t y = 0; y < HIGH; y++){
     for(uint8_t x = 0; x < WIDTH; x++){
       if(field[y][x] == ROADWITHCOIN){
         uint8_t neighbourRoadCounter = 0;
-        if(field[y+1][x] == 2) neighbourRoadCounter++;
-        if(field[y-1][x] == 2) neighbourRoadCounter++;
-        if(field[y][x+1] == 2) neighbourRoadCounter++;
-        if(field[y][x-1] == 2) neighbourRoadCounter++;
+        if(field[y+1][x] == ROADWITHCOIN) neighbourRoadCounter++;
+        if(field[y-1][x] == ROADWITHCOIN) neighbourRoadCounter++;
+        if(field[y][x+1] == ROADWITHCOIN) neighbourRoadCounter++;
+        if(field[y][x-1] == ROADWITHCOIN) neighbourRoadCounter++;
         if(neighbourRoadCounter == 1) return false;
       };
     }
   }
-
   for(;;){
-    uint8_t a = myrandom() % HIGH, b = myrandom() % WIDTH;
+    uint8_t a = rand() % HIGH, b = rand() % WIDTH;
     if(field[a][b] == ROADWITHCOIN){
       field[a][b] = ROADWITHCOIN+1;
       break;
@@ -133,7 +139,7 @@ bool MatchingPartExists(array<array<uint8_t, WIDTH/3+2>, HIGH/3+2> fieldParts, u
 bool setLowerWall(array<array<uint8_t, WIDTH>, HIGH> *field, uint8_t y, uint8_t x, bool firstCall){
     if((*field)[y][x] == WALL){
         (*field)[y][x] = LOWERWALL;
-        if(rand() % 2 || firstCall){
+        if(myrandom() % 2 || firstCall){
             setLowerWall(field, y+1, x, false);
             setLowerWall(field, y-1, x, false);
             setLowerWall(field, y, x+1, false);
@@ -153,7 +159,6 @@ bool setLowerWall(array<array<uint8_t, WIDTH>, HIGH> *field, uint8_t y, uint8_t 
 array<array<uint8_t, WIDTH>, HIGH> generateField(){
   for(;;){
     array<array<uint8_t, WIDTH/3+2>, HIGH/3+2> fieldParts;
-    srand(time(NULL));
 
     //clear field
     for(uint8_t i = 0; i < HIGH/3+2; i++){
@@ -196,13 +201,6 @@ array<array<uint8_t, WIDTH>, HIGH> generateField(){
         
     array<array<uint8_t, WIDTH>, HIGH> field = theFinalField(fieldParts);
     if(FieldIsViable(field)){
-        for(;;){
-            int y = myrandom() % HIGH, x = myrandom() % WIDTH;
-            if(field[y][x] == ROADWITHCOIN){
-                field[y][x] = PACMAN;
-                break;
-            }
-        }
         for(int i = 0; i < NUMBEROFPOWERUPS; i++){
             for(;;){
                 int y = myrandom() % HIGH, x = myrandom() % WIDTH;
@@ -213,8 +211,9 @@ array<array<uint8_t, WIDTH>, HIGH> generateField(){
             }
         }
         for(int i = 0; i < NUMBEROFLOWWALLS;){
-            if(setLowerWall(&field, rand() % HIGH, rand() % WIDTH, true)) i++;
+            if(setLowerWall(&field, myrandom() % HIGH, myrandom() % WIDTH, true)) i++;
         }
+        invertfield(&field);
         return field;
     }
   }

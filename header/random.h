@@ -1,20 +1,14 @@
 #ifndef RANDOM_H
 #define RANDOM_H
 
-#include <iostream>
+#include <math.h>
 
-using namespace std;
+static int seed = 10;
 
-long seed;
-
-void enterseed(){
-    cout << "Enter Seed: " << flush;
-    cin >> seed;
-}
-
-long long myrandom(){
-    //tbd
+int myrandom(){
+    return abs(100000*sin(seed+=42));
     return rand();
 }
+
 
 #endif

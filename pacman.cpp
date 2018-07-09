@@ -1,130 +1,108 @@
 #include <iostream>
 #include "header/map.h"
-#include "header/definitions.h"
-#include "header/player.h"
-#include "header/stuffididnotwrite.h"
-#include "header/random.h"
-#include "header/enemy.h"
-#include "header/powerup.h"
-#include "header/pathfinder.h"
 #include "header/draw.h"
+#include "header/player.h"
+#include "header/enemy.h"
 #include "header/menue.h"
-#include "header/field.h"
-#include "header/shot.h"
+#include "header/powerup.h"
 #include <array>
-#include <map>
-#include <unistd.h>
 #include <chrono>
 #include <thread>
 #include <vector>
 
+#include <stdio.h>
+#include <sys/select.h>
+#include <termios.h>
+#include <stropts.h>
+#include <sys/ioctl.h>
+
 using namespace std;
 
-field* enemy::Field;
-field* shot::Field;
-array<array<uint8_t, WIDTH>, HIGH>* pathfinder::field;
-
-
-
-array<array<uint8_t, WIDTH>, HIGH> locatepacman(array<array<uint8_t, WIDTH>, HIGH> field){
-        for(int y = 0; y < HIGH; y++){
-                for(int x = 0; x< WIDTH; x++){
-                        if(field[y][x] == PACMAN){
-                                for(int i = 0; i < HIGH; i++){
-                                        field[i][x] = PACMANSEARCH;
-                                }
-                                for(int i = 0; i < WIDTH; i++){
-                                        field[y][i] = PACMANSEARCH;
-                                }
-                                field[y][x] = PACMAN;
-                                return field;
-                        }
+void didIdie(player *pacman, vector<enemy> *enemyVector){
+        for(uint8_t i = 0; i < NUMBEROFENEMYS; i++){
+                if(pacman->posY == (*enemyVector)[i].posY && pacman->posX == (*enemyVector)[i].posX){
+                        pacman->alive--;
+                        (*enemyVector)[i].posY = HIGH/2;
+                        (*enemyVector)[i].posX = WIDTH/2;
+                        cout << "you died :(" << endl;
                 }
         }
-        return field;
 }
 
-/**
- * @brief gets the commands from the player
- * 
- * @param pacman is a pointer pointing to your playable caracter
- */
-void eingabe(player *pacman){
-        char c = '!';
-        if(_kbhit()){
-                c = getchar();
+void locatepacman(player *pacman){
+        for(int i = 0; i < HIGH; i++){
+                draw(pacman->posX, i, "\033[48;5;8;38;5;3m+ ");
         }
-        switch(c) {
-                case 'w': (*pacman).direction = 0; break; // up
-                case 's': (*pacman).direction = 2; break; // down
-                case 'd': (*pacman).direction = 1; break; // right
-                case 'a': (*pacman).direction = 3; break; // left
-                default: break;
+        for(int i = 0; i < WIDTH; i++){
+                draw(i, pacman->posY, "\033[48;5;8;38;5;3m+ ");
         }
+        draw(pacman->posX, pacman->posY, pacman->getsymbol());
 }
 
 int main() {
-        while(true){
-                if(menue()){return 0;}else{loadingscreen();}
-                getColors();
-                field field(generateField());
-                player pacman(&field);
-                enemy::Field = &field;
-                shot::Field = &field;
-                pathfinder::field = &(field.Field);
-                vector<enemy> enemyvector;
-                vector<shot> shotvector;
-                for(uint8_t i = 0; i < NUMBEROFENEMYS; i++){
-                        enemyvector.push_back(enemy(pacman.posY, pacman.posX));
+        
+        //i dont know what this is. it does not work like i want, but without it its worse
+        static const int STDIN = 0;
+        termios term;
+        tcgetattr(STDIN, &term);
+        term.c_lflag &= ~ICANON;
+        tcsetattr(STDIN, TCSANOW, &term);
+        setbuf(stdin, NULL);
+        
+        menue();
+        
+        system("clear");
+        
+        // this is the field you play on. Its just a map, it will not show the position of enemys
+        fieldtyp<uint8_t> field = generateField();
+        
+        //this array contains the textures of everything, except for pacman
+        array<string, 8> colors;
+        setcolors(&colors);
+        
+        //a new pacman will be born 
+        player pacman(&field, &colors);
+        
+        vector<enemy> enemyVector; // i wanted to use an array here, but it was different...
+        for(uint8_t i = 0; i < NUMBEROFENEMYS; i++){enemyVector.push_back(enemy(&field, &colors, &pacman));}
+        
+        //locates pacman
+        locatepacman(&pacman);
+        
+        //waits until you are ready
+        cin.ignore().get();
+        
+        //at the beginning the whole field will be drawn
+        drawWholeField(&field, &colors);
+        
+        while(pacman.alive){
+                
+                //you can change the direction of pacman with this
+                pacman.changeDirection();
+                
+                //pacman will be moved
+                pacman.move();
+                
+                //gives pacman a power up, if he deserves it
+                if(pacman.getpowerup){
+                        pacman.getpowerup = false;
+                        givePowerup(&pacman);
+                        drawWholeField(&field, &colors);
+                        
                 }
-                draw(locatepacman(field.Field), &pacman);
-                for(;;){if(_kbhit()) break;}
-                draw(field.Field, &pacman);
-                while(pacman.alive){
-                        drawOnlyNewStuff(field, &pacman);
-                        cout << shotvector.size() << endl;
-                        field.resetbField();
-                        if(pacman.getpowerup){
-                                givePowerup(&pacman);
-                                pacman.getpowerup = false;
-                                draw(field.Field, &pacman);
-                        }
-                        this_thread::sleep_for(chrono::milliseconds(30));
-                        for(uint8_t i = 0; i < enemyvector.size(); i++){
-                                if(enemyvector[i].alive){
-                                        if(enemyvector[i].move(pacman.posY, pacman.posX)){
-                                                pacman.deathAnimation();
-                                                draw(field.Field, &pacman);
-                                                enemyvector[i].alive = false;
-                                                pacman.alive--;
-                                        }
-                                        if(enemyvector[i].shot(pacman.posY, pacman.posX)){
-                                                shotvector.push_back(shot(enemyvector[i].posY, enemyvector[i].posX, pacman.posY, pacman.posX));
-                                        }
-                                }else{
-                                        enemyvector[i].alive = true;
-                                        enemyvector[i].posX = WIDTH/2;
-                                        enemyvector[i].posY = HIGH/2;
-                                        field.changeFieldValue(HIGH/2, WIDTH/2, ENEMY);
-                                }
-                        }
-                        for(uint8_t i = 0; i < shotvector.size(); i++){
-                                if(shotvector[i].viableShot){
-                                        if(shotvector[i].move()){
-                                                pacman.deathAnimation();
-                                                draw(field.Field, &pacman);
-                                                shotvector[i].viableShot = false;
-                                                pacman.alive--;
-                                        }
-                                }else{
-                                        //shotvector.erase(shotvector.begin()+i);
-                                }
-                        }
-                        eingabe((&pacman));
-                        pacman.move();
-                }
-                field.changeFieldValue(pacman.posY, pacman.posX, PACMAN);
-                draw(field.Field, &pacman);
-                gameover(&pacman);
+                
+                //moves the enemys
+                for(uint8_t i = 0; i < NUMBEROFENEMYS; i++){enemyVector[i].checkvisibility(&pacman); enemyVector[i].move();}
+                
+                //checks if you are dead
+                didIdie(&pacman, &enemyVector);
+                
+                //pacman will show you his stats 
+                pacman.showStats();
+                
+                //just a little break
+                this_thread::sleep_for(chrono::milliseconds(30));
+                
         }
+        gameover(&pacman);
 }

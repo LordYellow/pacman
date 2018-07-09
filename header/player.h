@@ -3,18 +3,20 @@
 
 #include <array>
 #include "definitions.h"
-#include <iostream>
-#include <chrono>
-#include <thread>
-#include "field.h"
+#include "random.h"
+#include "draw.h"
+#include "stuffididnotwrite.h"
+
+using namespace std;
 
 class player {
 public:
-    player(field *thefield);
+    player(fieldtyp<uint8_t> *thefield, array<string, 8> *colors);
     uint8_t direction = 0, posX= 0, posY = 0, coins = 0, baseDelay = 10, delayCounter = 0, crushWalls = 0;
     int alive = 1;
     bool getpowerup = false, symbol = false;
-    field *Field;
+    fieldtyp<uint8_t> *field;
+    array<string, 8> *colors;
     string getsymbol();
     
     /**
@@ -28,49 +30,47 @@ public:
      * @param field is a pointer to the field you play on. this will be removed later
      */
     void move();
+    
+    void changeDirection();
+    
+    void showStats();
 };
 
-player::player(field *thefield){
-    this->Field = thefield;
-    for(uint8_t y = 0; y < HIGH; y++){
-      for(uint8_t x = 0; x < WIDTH; x++){
-          if(this->Field->getFieldValue(y,x) == PACMAN){
-              this -> posX = x;
-              this -> posY = y;
-            }
+player::player(fieldtyp<uint8_t> *thefield, array<string, 8> *colors){
+    this->field = thefield;
+    for(;;){
+        uint8_t y = myrandom() % HIGH, x = myrandom() % WIDTH;
+        if((*this->field)[y][x] == ROADWITHCOIN){
+            this->posY = y;
+            this->posX = x;
+            break;
         }
     }
+    this->colors = colors;
 }
 
 void player::move(){
     if(this->delayCounter == this->baseDelay){
         this->delayCounter = 0;
         this->symbol = !this->symbol;
-        this->Field->changeFieldValue(this->posY, this->posX, ROAD);
+        drawWithTexture(this->posX, this->posY, this->colors, (*this->field)[this->posY][this->posX]);
         switch(this -> direction){
             case 0: this->posY--; break;
             case 1: this->posX++; break;
             case 2: this->posY++; break;
             case 3: this->posX--; break;
         }
-        if(crushWalls && (this->Field->getFieldValue(this->posY, this->posX) == WALL || this->Field->getFieldValue(this->posY, this->posX) == LOWERWALL)){
-            if(this->Field->getFieldValue(this->posY, this->posX) == ROADWITHCOIN) this->coins++;
-            if(this->Field->getFieldValue(this->posY, this->posX) == POWERUP) this->getpowerup = true;
-            if(this->Field->getFieldValue(this->posY, this->posX) == ENEMY){
-                this->alive--;
-                this->deathAnimation();
-            }
-            this->Field->changeFieldValue(this->posY, this->posX, PACMAN);
+        if(crushWalls && ((*this->field)[this->posY][this->posX] == WALL || (*this->field)[this->posY][this->posX] == LOWERWALL)){
+            if((*this->field)[this->posY][this->posX] == ROADWITHCOIN){this->coins++; (*this->field)[this->posY][this->posX] = ROAD;}
+            if((*this->field)[this->posY][this->posX] == POWERUP) {this->getpowerup = true; (*this->field)[this->posY][this->posX] = ROAD;}
+            draw(this->posX, this->posY, this->getsymbol());
+            (*this->field)[this->posY][this->posX] = ROAD;
             this->crushWalls--;
         }else{
-            if(this->Field->getFieldValue(this->posY, this->posX) != WALL && this->Field->getFieldValue(this->posY, this->posX) != LOWERWALL){
-                if(this->Field->getFieldValue(this->posY, this->posX) == ROADWITHCOIN) this->coins++;
-                if(this->Field->getFieldValue(this->posY, this->posX) == POWERUP) this->getpowerup = true;
-                if(this->Field->getFieldValue(this->posY, this->posX) == ENEMY){
-                    this->alive--;
-                    this->deathAnimation();
-                }
-                this->Field->changeFieldValue(this->posY, this->posX, PACMAN);
+            if((*this->field)[this->posY][this->posX] != WALL && (*this->field)[this->posY][this->posX] != LOWERWALL){
+                if((*this->field)[this->posY][this->posX] == ROADWITHCOIN){this->coins++; (*this->field)[this->posY][this->posX] = ROAD;}
+                if((*this->field)[this->posY][this->posX] == POWERUP) {this->getpowerup = true; (*this->field)[this->posY][this->posX] = ROAD;}
+                draw(this->posX, this->posY, this->getsymbol());
             }else{
                 switch(this -> direction){
                     case 2: this->posY--; break;
@@ -78,7 +78,7 @@ void player::move(){
                     case 0: this->posY++; break;
                     case 1: this->posX--; break;
                 }
-            this->Field->changeFieldValue(this->posY, this->posX, PACMAN);
+            draw(this->posX, this->posY, this->getsymbol());
             }
         }
     }else{
@@ -97,15 +97,26 @@ string player::getsymbol(){
         default: return "somthing went wrong";
     }
 }
-    
-void player::deathAnimation(){
-    system("clear");
-    for(int i = 0; i < HIGH; i++){
-            for(int a = 0; a < WIDTH; a++){
-                cout << "\033[48;5;9m  " << "\033[0m";
-            }
-            cout << endl;
+
+void player::changeDirection(){
+    char c = '!';
+    if(_kbhit()){
+        c = getchar();
     }
-    this_thread::sleep_for(chrono::milliseconds(120));
+    switch(c) {
+        case 'w': this->direction = 0; break; // up
+        case 's': this->direction = 2; break; // down
+        case 'd': this->direction = 1; break; // right
+        case 'a': this->direction = 3; break; // left
+        default: break;
+    }
 }
+
+void player::showStats(){
+    cout << "\033[48;5;8;38;5;4m" << "\033[" << to_string(HIGH+1) << ";" << "0" << "H" << "\033[0m";
+    cout << "SCORE: " << (int)this->coins << endl;
+    cout << "LIVES: " << (int)this->alive << endl;
+    cout << "ABILITY TO CRUSH WALLS: " << (int)this->crushWalls << endl;
+}
+
 #endif 

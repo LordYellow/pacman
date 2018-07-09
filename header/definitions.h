@@ -1,22 +1,25 @@
 #ifndef DEFINITIONS_H
 #define DEFINITIONS_H
 
+#include <array>
+
 #define HIGH 60
 #define WIDTH 60
-#define ROADWITHCOIN 2
-#define WALL 1
-#define PACMAN 4
-#define ROAD 3
-#define ENEMY 5
-#define NUMBEROFENEMYS 10
-#define PACMANSEARCH 6
-#define POWERUP 7
+#define NUMBEROFLOWWALLS 25
 #define NUMBEROFPOWERUPS 20
-#define USEDWAY 8
-#define PACMANDETECTIONRANGE 20
-#define LOWERWALL 9
-#define NUMBEROFLOWWALLS 10
-#define SHOTRANGE 8
-#define SHOT 10
+#define PACMANDETECTIONRANGE 10
+#define NUMBEROFENEMYS 10
+
+//colorIDs
+#define WALL 1
+#define LOWERWALL 0
+#define ROAD 3
+#define ROADWITHCOIN 2
+#define POWERUP 4
+
+//"textures"
+#define ENEMY "\033[48;5;7;38;5;9m۩ "
+
+template<typename T> using fieldtyp = std::array<std::array<T, HIGH>, WIDTH>;
 
 #endif

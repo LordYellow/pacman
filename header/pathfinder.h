@@ -6,13 +6,16 @@
 
 using namespace std;
 
+#define USEDWAY 20
+#define PACMAN 10
+
 class pathfinder{
 public:
     pathfinder(uint8_t x, uint8_t y, array<array<uint8_t, WIDTH>, HIGH> *wField);
     pathfinder(pathfinder* oldpath, uint8_t x, uint8_t y);
     bool emptyway = true, pacmanIsNear = false;
     uint8_t posX, posY, connections, originalX, originalY;
-    static array<array<uint8_t, WIDTH>, HIGH> *field;
+    array<array<uint8_t, WIDTH>, HIGH> *field;
     
     /**
      * @brief returns a new pathfinder connected to this one. you have to call this function for the number of connections to get enough pathfinders. if you already called it that many times this function will return itself
