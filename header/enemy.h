@@ -13,6 +13,7 @@ using namespace std;
 
 class enemy {
 public:
+    enemy();
     enemy(fieldtyp<uint8_t> *thefield,array<string, 8> *colors, player *pacman);
     uint8_t posX= 0, posY = 0, randomDirection = myrandom() % 4, baseDelay = 10, delayCounter = 0, shotDelay = 10, shotDelayCounter = 10;
     bool visibility = false;
@@ -64,6 +65,14 @@ enemy::enemy(fieldtyp<uint8_t> *thefield, array<string, 8> *colors, player *pacm
             }
         }
     }
+}
+
+enemy::enemy(){
+    this->field = NULL;
+    this->colors = NULL;
+    this->pacman = NULL;
+    this->posX = 0;
+    this->posY = 0;
 }
 
 void enemy::move(){

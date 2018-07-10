@@ -78,6 +78,8 @@ int main() {
         //a new pacman will be born 
         player pacman(&field, &colors);
         
+        //array<enemy, NUMBEROFENEMYS> enemyArray;
+        //enemyArray.fill(enemy(&field, &colors, &pacman));
         vector<enemy> enemyVector; // i wanted to use an array here, but it was different...
         for(uint8_t i = 0; i < NUMBEROFENEMYS; i++){enemyVector.push_back(enemy(&field, &colors, &pacman));}
         

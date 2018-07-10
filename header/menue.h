@@ -98,7 +98,6 @@ void changeseed(){
     cout << "ENTER THE SEED: " << flush;
     getline(cin, seedstring);
     seed = stoi(seedstring);
-    
 }
 
 void menue(){
