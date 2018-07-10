@@ -11,7 +11,7 @@ using namespace std;
 
 class shot{
 public:
-    shot(uint8_t y, uint8_t x, uint8_t targetY, uint8_t targetX, array<string, 8> *thecolors);
+    shot(uint8_t y, uint8_t x, uint8_t targetY, uint8_t targetX, array<string, 8> *thecolors,fieldtyp<uint8_t> *thefield);
     
     fieldtyp<uint8_t> *field;
     bool viableShot = true;
@@ -25,13 +25,14 @@ public:
     void getShotFields();
 };
 
-shot::shot(uint8_t y, uint8_t x, uint8_t targetY, uint8_t targetX, array<string, 8> *thecolors){
+shot::shot(uint8_t y, uint8_t x, uint8_t targetY, uint8_t targetX, array<string, 8> *thecolors, fieldtyp<uint8_t> *thefield){
     this->y = y;
     this->x = x;
     this->targetY = targetY;
     this->targetX = targetX;
     this->colors = thecolors;
     this->getShotFields();
+    this->field = thefield;
 }
 
 void shot::getShotFields(){

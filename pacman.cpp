@@ -19,10 +19,10 @@
 
 using namespace std;
 
-void createShots(player *pacman, vector<shot> *shotVector, vector<enemy> *enemyVector, array<string, 8> *colors){
+void createShots(player *pacman, vector<shot> *shotVector, vector<enemy> *enemyVector, array<string, 8> *colors, fieldtyp<uint8_t> *field){
         for(uint8_t i = 0; i < NUMBEROFENEMYS; i++){
                 if((*enemyVector)[i].shot()){
-                        (*shotVector).push_back(shot((*enemyVector)[i].posY, (*enemyVector)[i].posX, pacman->posY, pacman->posX, colors));
+                        (*shotVector).push_back(shot((*enemyVector)[i].posY, (*enemyVector)[i].posX, pacman->posY, pacman->posX, colors, field));
                 }
         }
 }
@@ -106,7 +106,7 @@ int main() {
                 for(uint8_t i = 0; i < NUMBEROFENEMYS; i++){enemyVector[i].checkvisibility(&pacman); enemyVector[i].move();}
                 
                 //creates shots
-                createShots(&pacman, &shotVector, &enemyVector, &colors);
+                createShots(&pacman, &shotVector, &enemyVector, &colors, &field);
                 
                 for(uint8_t i = 0; i < shotVector.size(); i++){shotVector[i].move();}
                 
