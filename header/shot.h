@@ -45,7 +45,7 @@ void shot::getShotFields(){
 void shot::move(){ //will rewrite it tomorrow 
     if(this->delayCounter == this->baseDelay){
         this->delayCounter = 0;
-        drawWithTexture(this->pointVector[0][1], this->pointVector[0][0], this->colors, (*this->field)[this->pointVector[0][1]][this->pointVector[0][0]]); // for some reason this will cause a segmentation fault
+        drawWithTexture(this->pointVector[0][1], this->pointVector[0][0], this->colors, (*this->field)[this->pointVector[0][0]][this->pointVector[0][1]]); // for some reason this will cause a segmentation fault
         pointVector.erase(pointVector.begin());
         if((*this->field)[this->pointVector[0][1]][this->pointVector[0][0]] == WALL || this->y > HIGH || this->x > WIDTH || pointVector.size() == 0){this->viableShot = false; return;}
         draw(this->pointVector[0][1], this->pointVector[0][0], "\033[48;5;13m* ");

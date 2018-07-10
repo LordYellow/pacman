@@ -15,7 +15,7 @@ void powerUpNotification(string effect){
     cout << "╘";
     for(uint8_t i = 0; i < effect.length()+2; i++){cout << "═";}
     cout << "╛" << "\033[0m" << endl;
-    cin.ignore().get();
+    cin.get();
 }
 
 void giveLife(player *pacman){

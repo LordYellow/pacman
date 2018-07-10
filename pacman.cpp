@@ -81,7 +81,7 @@ int main() {
         locatepacman(&pacman);
         
         //waits until you are ready
-        cin.ignore().get();
+        cin.get();
         
         //at the beginning the whole field will be drawn
         drawWholeField(&field, &colors);

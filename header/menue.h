@@ -46,11 +46,11 @@ void showHighscores(){
         for(uint8_t i = 0; i < scores.size() && i < 5; i++){
             cout << scores[i] << endl;
         }
-        cin.ignore().get();
+        cin.get();
         
     }else{
         cout << "You dont Have a Highscore right now. Play the Game!" << endl;
-        cin.ignore().get();
+        cin.get();
     }
     readHighscores.close();
 }
