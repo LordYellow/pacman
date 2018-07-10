@@ -9,6 +9,7 @@
 #define NUMBEROFPOWERUPS 20
 #define PACMANDETECTIONRANGE 10
 #define NUMBEROFENEMYS 10
+#define SHOTRANGE 10
 
 //colorIDs
 #define WALL 1

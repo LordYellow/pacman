@@ -27,13 +27,19 @@ void createShots(player *pacman, vector<shot> *shotVector, vector<enemy> *enemyV
         }
 }
 
-void didIdie(player *pacman, vector<enemy> *enemyVector){
+void didIdie(player *pacman, vector<enemy> *enemyVector, vector<shot> *shotVector){
         for(uint8_t i = 0; i < NUMBEROFENEMYS; i++){
                 if(pacman->posY == (*enemyVector)[i].posY && pacman->posX == (*enemyVector)[i].posX){
                         pacman->alive--;
                         (*enemyVector)[i].posY = HIGH/2;
                         (*enemyVector)[i].posX = WIDTH/2;
-                        cout << "you died :(" << endl;
+                }
+        }
+        
+        for(uint8_t i = 0; i < (*shotVector).size(); i++){
+                if(pacman->posY == (*shotVector)[i].pointVector[0][0] && pacman->posX == (*shotVector)[i].pointVector[0][1]){
+                        pacman->alive--;
+                        (*shotVector).erase(shotVector->begin()+i);
                 }
         }
 }
@@ -102,6 +108,9 @@ int main() {
                         
                 }
                 
+                //checks if you are dead
+                didIdie(&pacman, &enemyVector, &shotVector);
+                
                 //moves the enemys
                 for(uint8_t i = 0; i < NUMBEROFENEMYS; i++){enemyVector[i].checkvisibility(&pacman); enemyVector[i].move();}
                 
@@ -113,7 +122,7 @@ int main() {
                 for(uint8_t i = 0; i < shotVector.size(); i++){if(!shotVector[i].viableShot) shotVector.erase(shotVector.begin()+i);}
                 
                 //checks if you are dead
-                didIdie(&pacman, &enemyVector);
+                didIdie(&pacman, &enemyVector, &shotVector);
                 
                 //pacman will show you his stats 
                 pacman.showStats();

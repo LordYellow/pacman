@@ -35,6 +35,7 @@ shot::shot(uint8_t y, uint8_t x, uint8_t targetY, uint8_t targetX, array<string,
     this->field = thefield;
 }
 
+/*
 void shot::getShotFields(){
     double unitVectorY = (this->targetY-this->y)/sqrt(pow(this->targetY-this->y, 2) + pow(this->targetX-this->x, 2)), unitVectorX = (this->targetX-this->x)/sqrt(pow(this->targetY-this->y, 2) + pow(this->targetX-this->x, 2));
     for(uint8_t i = 0;; i++){
@@ -42,6 +43,15 @@ void shot::getShotFields(){
         this->pointVector.push_back({(uint8_t)round(this->y + unitVectorY*i), (uint8_t)round(this->x + unitVectorX*i)});
     }
 }
+*/
+
+void shot::getShotFields(){
+    double unitVectorY = (this->targetY-this->y)/sqrt(pow(this->targetY-this->y, 2) + pow(this->targetX-this->x, 2)), unitVectorX = (this->targetX-this->x)/sqrt(pow(this->targetY-this->y, 2) + pow(this->targetX-this->x, 2));
+    for(uint8_t i = 0; i < SHOTRANGE; i++){
+        this->pointVector.push_back({(uint8_t)round(this->y + unitVectorY*i), (uint8_t)round(this->x + unitVectorX*i)});
+    }
+}
+
 
 void shot::move(){ //will rewrite it tomorrow 
     if(this->delayCounter == this->baseDelay){
